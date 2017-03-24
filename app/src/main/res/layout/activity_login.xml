@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="141dp"
+        android:layout_height="128dp"
+        android:background="@drawable/bridgelabz"
+        android:layout_marginLeft="120dp"/>
+
+     <android.support.v7.widget.AppCompatEditText
+         android:id="@+id/loginEt"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:hint="Email"/>
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/pswrdEt"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Password"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/forgotTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:textColor="@color/colorPrimary"
+        android:onClick="forgotpass"
+        android:textSize="20dp"
+       />
+
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_marginTop="25dp"
+        android:id="@+id/loginbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="120dp"
+        android:background="@color/coloryell"
+        android:onClick="Login"
+        android:text="@string/loginbtn"
+        android:textStyle="bold"/>
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/createacctv"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Account"
+        android:onClick="CreateAccount"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20dp"
+        android:layout_marginLeft="80dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/gglIv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:onClick="Googlesignin"
+            android:src="@drawable/facebook"/>
+
+
+        <android.support.v7.widget.AppCompatImageView
+
+            android:id="@+id/fbIv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:onClick="Signinfb"
+            android:src="@drawable/googlesignin"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/margintop"
+    android:layout_marginBottom="@dimen/marginbottom">
+    tools:context="com.example.bridgeit.registrationpage.MainActivity">
+    >
+
+    <ImageView
+        android:id="@+id/registerimgview"
+        android:layout_width="99dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="120dp"
+        android:onClick="register"
+        android:background="@drawable/register"    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_marginTop="@dimen/margintop"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/nametv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/full_name"
+            android:textSize="@dimen/fontsize"
+            android:textStyle="bold"
+            android:inputType="text"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_weight="0.6"
+            />
+
+        <EditText
+            android:id="@+id/nameet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:layout_weight="0.4">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_marginTop="@dimen/margintop"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/emailtv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/emai"
+            android:textSize="@dimen/fontsize"
+            android:textColor="@color/colorPrimaryDark"
+
+            android:textStyle="bold"
+            android:layout_weight="0.6"
+            />
+
+        <EditText
+            android:id="@+id/emailet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_marginTop="@dimen/margintop"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/mobilenotv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mobile_no"
+            android:textSize="@dimen/fontsize"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_weight="0.6"
+            />
+
+        <EditText
+            android:id="@+id/mobilenoet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            >
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_marginTop="@dimen/margintop"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/passwordtv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:textSize="@dimen/fontsize"
+            android:textStyle="bold"
+            android:layout_weight="0.6"
+            android:textColor="@color/colorPrimaryDark"
+            />
+
+        <EditText
+            android:id="@+id/passwordet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4">
+        </EditText>
+    </LinearLayout>
+</LinearLayout>

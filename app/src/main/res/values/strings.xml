@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="WC_to_BL">Welcome To BridgeLabz</string>
+    <string name="full_name">Full Name</string>
+    <string name="emai">Email</string>
+    <string name="mobile_no">Mobile Number</string>
+    <string name="password">Password</string>
+    <string name="loginbtn">LOGIN</string>
+</resources>
