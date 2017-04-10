@@ -7,23 +7,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context="com.example.bridgeit.todoapp.SplashScreen">
+    android:background="@drawable/backgnd"
+    tools:context="com.example.bridgeit.todoapp.ui.SplashScreenActivity">
 >
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bridgelabz"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:textStyle="italic|bold"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:freezesText="true"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:text="@string/WC_to_BL"
-        android:textStyle="bold"
-        android:layout_marginStart="@dimen/marginstart"
-        android:textSize="@dimen/textsize"
-        android:textColor="@color/colorAccent"/>
-
-
+        android:textColor="#0e0e0e"
+        android:textSize="30dp"/>
 </LinearLayout>

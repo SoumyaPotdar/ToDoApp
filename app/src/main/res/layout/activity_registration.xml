@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
@@ -6,17 +7,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/margintop"
-    android:layout_marginBottom="@dimen/marginbottom">
+    android:layout_marginBottom="@dimen/marginbottom"
+    android:weightSum="1"
+    android:layout_marginRight="@dimen/margin"
+    android:layout_marginLeft="@dimen/margin">
     tools:context="com.example.bridgeit.registrationpage.MainActivity">
     >
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/registerimgview"
-        android:layout_width="99dp"
-        android:layout_height="70dp"
+        android:layout_width="63dp"
+        android:layout_height="@dimen/height"
         android:layout_marginLeft="120dp"
-        android:onClick="register"
-        android:background="@drawable/register"    />
+        android:background="@drawable/register"
+        android:layout_weight="0.01" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,8 +29,8 @@
         android:layout_marginTop="@dimen/margintop"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/nametv"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/nametextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/full_name"
@@ -37,13 +41,12 @@
             android:layout_weight="0.6"
             />
 
-        <EditText
-            android:id="@+id/nameet"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/nameedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:layout_weight="0.4">
-        </EditText>
+            android:layout_weight="0.4"/>
     </LinearLayout>
 
     <LinearLayout
@@ -53,24 +56,22 @@
         android:layout_marginTop="@dimen/margintop"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/emailtv"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/emailtextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/emai"
             android:textSize="@dimen/fontsize"
             android:textColor="@color/colorPrimaryDark"
-
             android:textStyle="bold"
             android:layout_weight="0.6"
             />
 
-        <EditText
-            android:id="@+id/emailet"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/emailedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.4">
-        </EditText>
+            android:layout_weight="0.4"/>
     </LinearLayout>
 
     <LinearLayout
@@ -80,8 +81,8 @@
         android:layout_marginTop="@dimen/margintop"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/mobilenotv"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/mobilenotextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mobile_no"
@@ -91,13 +92,12 @@
             android:layout_weight="0.6"
             />
 
-        <EditText
-            android:id="@+id/mobilenoet"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/mobilenoedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.4"
-            >
-        </EditText>
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -107,8 +107,8 @@
         android:layout_marginTop="@dimen/margintop"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/passwordtv"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/passwordtextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/password"
@@ -118,11 +118,21 @@
             android:textColor="@color/colorPrimaryDark"
             />
 
-        <EditText
-            android:id="@+id/passwordet"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/passwordedittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.4">
-        </EditText>
+            android:layout_weight="0.4"/>
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/registrationbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marg_top_25dp"
+        android:text="Save"
+        android:layout_marginLeft="@dimen/icon_lmargin"
+        android:background="@drawable/rounded_button"
+        android:textStyle="bold"
+        android:textAllCaps="false"/>
 </LinearLayout>

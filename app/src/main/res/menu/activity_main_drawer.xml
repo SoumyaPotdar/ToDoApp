@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_notes"
+            android:title="Notes" />
+        <item
+            android:id="@+id/nav_reminders"
+            android:title="Reminders" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_new_table"
+            android:icon="@drawable/add"
+            android:title="Create new table" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_archieve"
+            android:title="Archieve" />
+
+        <item
+            android:id="@+id/nav_delete"
+            android:title="Deleted" />
+        </group>
+
+    <group>
+    <item android:title="">
+
+            <item
+                android:id="@+id/nav_settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_helpfeedback"
+                android:title="Help and feedback" />
+
+    </item>
+    </group>
+</menu>
+

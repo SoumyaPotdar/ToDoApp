@@ -1,63 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:weightSum="1">
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="141dp"
-        android:layout_height="128dp"
-        android:background="@drawable/bridgelabz"
-        android:layout_marginLeft="120dp"/>
 
-     <android.support.v7.widget.AppCompatEditText
-         android:id="@+id/loginEt"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:hint="Email"/>
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:layout_marginLeft="@dimen/icon_lmargin"
+        android:background="@drawable/bridgelabz" />
 
     <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/pswrdEt"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="Password"/>
-
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_marginTop="10dp"
-        android:id="@+id/forgotTv"
+        android:id="@+id/loginEdittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_edittext"
+        android:hint="@string/email"
+        android:padding="10dp" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/passwordEdittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_edittext"
+        android:hint="Password"
+        android:padding="10dp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/forgotpassTextview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="Forgot Password?"
         android:textColor="@color/colorPrimary"
-        android:onClick="forgotpass"
-        android:textSize="20dp"
-       />
+        android:textSize="@dimen/text_size" />
 
 
     <android.support.v7.widget.AppCompatButton
-        android:layout_marginTop="25dp"
         android:id="@+id/loginbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="120dp"
-        android:background="@color/coloryell"
-        android:onClick="Login"
+        android:layout_marginLeft="@dimen/margin_b"
+        android:layout_marginTop="@dimen/marg_top_25dp"
+        android:background="@drawable/rounded_button"
         android:text="@string/loginbtn"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/createacctv"
-        android:layout_marginTop="20dp"
+        android:id="@+id/createaccounttextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="@dimen/margin"
         android:text="Create Account"
-        android:onClick="CreateAccount"
-        android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="20dp"
-        android:layout_marginLeft="80dp"/>
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,22 +69,19 @@
         android:weightSum="1">
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/gglIv"
+            android:id="@+id/googleImageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:onClick="Googlesignin"
-            android:src="@drawable/facebook"/>
-
+            android:src="@drawable/facebook" />
 
         <android.support.v7.widget.AppCompatImageView
 
-            android:id="@+id/fbIv"
+            android:id="@+id/fbImageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:onClick="Signinfb"
-            android:src="@drawable/googlesignin"/>
+            android:src="@drawable/googlesignin" />
 
     </LinearLayout>
 
