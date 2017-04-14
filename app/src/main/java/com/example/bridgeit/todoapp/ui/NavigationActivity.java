@@ -14,15 +14,15 @@ import android.view.View;
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 
-public class NavigationActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
-{
+public class NavigationActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     Toolbar toolbar;
     FloatingActionButton fab;
     DrawerLayout drawer;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
-        initview();
+        initView();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,7 +35,7 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -77,33 +77,31 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+       /* switch (item.getItemId()) {
+            case R.id.nav_notes:
+                ToDoMainActivity toDoMainActivity=new ToDoMainActivity();
+               getFragmentManager().beginTransaction().replace(R.id.fragment, toDoMainActivity).commit();
+            break;
+            case R.id.nav_reminders:
+            case R.id.nav_new_table:
+            case R.id.nav_archieve:
+            case R.id.nav_delete:
+*//*
 
-        if (id == R.id.nav_notes) {
-        } else if (id == R.id.nav_reminders) {
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);*/
+                return true;
 
-        } else if (id == R.id.nav_new_table) {
-
-        } else if (id == R.id.nav_archieve) {
-
-        } else if (id == R.id.nav_delete) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
-    public void initview() {
+    public void initView() {
 
-         toolbar= (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         fab = (FloatingActionButton) findViewById(R.id.nav_fab);
+
 
     }
 }
-

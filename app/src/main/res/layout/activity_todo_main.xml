@@ -4,7 +4,9 @@
     android:id="@+id/welcomelayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+
     <android.support.v7.widget.CardView
         android:id="@+id/myCardView"
         android:layout_width="match_parent"
@@ -16,17 +18,29 @@
         app:cardCornerRadius="20dp"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/mytextView"
+            android:id="@+id/titletextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#010405"
             android:layout_marginLeft="@dimen/margin"
             android:text=""
             android:textStyle="bold|italic" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/descriptiontextview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#010405"
+            android:layout_marginLeft="@dimen/margin"
+            android:text=""
+            android:layout_marginTop="@dimen/margin"
+            android:textStyle="bold|italic" />
+</LinearLayout>
     </android.support.v7.widget.CardView>
-
 
 
 </LinearLayout>

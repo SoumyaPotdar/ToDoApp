@@ -42,7 +42,7 @@ public class SplashScreenActivity extends BaseActivity {
 
 
     @Override
-    public void initview() {
+    public void initView() {
 
     }
 }

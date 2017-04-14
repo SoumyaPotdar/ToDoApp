@@ -1,7 +1,5 @@
 package com.example.bridgeit.todoapp.ui;
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v7.widget.AppCompatButton;
@@ -12,24 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bridgeit.todoapp.R;
+import com.example.bridgeit.todoapp.model.NotesModel;
+import com.example.bridgeit.todoapp.sqliteDataBase.NotesDataBaseHandler;
 
-public class FragmentActivity1 extends Fragment implements View.OnClickListener{
-    AppCompatEditText resdisplayedittext;
+public class AddNoteFragment extends Fragment implements View.OnClickListener{
+    AppCompatEditText titleedittext;
+    AppCompatEditText discriptionedittext;
     AppCompatButton savebutton;
     ToDoMainActivity toDoMainActivity;
-    public FragmentActivity1(ToDoMainActivity toDoMainActivity) {
+    NotesDataBaseHandler notesDataBaseHandler;
+    NotesModel notesModel;
+    public AddNoteFragment(ToDoMainActivity toDoMainActivity) {
         this.toDoMainActivity=toDoMainActivity;
     }
 
-    public FragmentActivity1() {
+    public AddNoteFragment() {
 
     }
 
-    public static FragmentActivity1 newInstance() {
-
+    public static AddNoteFragment newInstance() {
         Bundle args = new Bundle();
-
-        FragmentActivity1 fragment = new FragmentActivity1();
+        AddNoteFragment fragment = new AddNoteFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,26 +38,24 @@ public class FragmentActivity1 extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
     View view= inflater.inflate(R.layout.fragment_container, container,false);
-        resdisplayedittext=(AppCompatEditText)view.findViewById(R.id.fragmentdataedittext);
+
+        titleedittext=(AppCompatEditText)view.findViewById(R.id.fragmenttitledittext);
+        discriptionedittext=(AppCompatEditText)view.findViewById(R.id.fragmentdiscriptionedittext);
         savebutton=(AppCompatButton)view.findViewById(R.id.savedatabutton);
         savebutton.setOnClickListener(this);
-
-
-      /*  String strtext = getArguments().getString("texts");
-        resdisplayedittext.setText(strtext);*/
        return  view;
     }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
             case R.id.savedatabutton:
-
+                notesDataBaseHandler=new NotesDataBaseHandler(getActivity());
+                notesModel=new NotesModel(titleedittext.getText().toString(), discriptionedittext.getText().toString());
+                notesDataBaseHandler.addNote(notesModel);
+                toDoMainActivity.setBackData(notesModel);
                 getActivity().getFragmentManager().popBackStackImmediate();
-                toDoMainActivity.setBackData(resdisplayedittext.getText().toString());
-
                 break;
         }
     }

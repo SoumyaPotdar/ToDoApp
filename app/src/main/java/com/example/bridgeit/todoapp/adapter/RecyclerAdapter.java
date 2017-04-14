@@ -10,19 +10,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.bridgeit.todoapp.R;
+import com.example.bridgeit.todoapp.model.NotesModel;
 
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder> implements View.OnClickListener {
     Context context;
-    AppCompatTextView textView;
-    List<String> data;
+    AppCompatTextView textViewtitle;
+    AppCompatTextView textViewdesc;
+
+    List<NotesModel> model;
     CardView cardView;
     private static LayoutInflater inflater = null;
 
-    public RecyclerAdapter(Context context, List<String> data) {
+    public RecyclerAdapter(Context context, List<NotesModel> data) {
         this.context = context;
-        this.data = data;
+        this.model = data;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -37,18 +40,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
-
-        textView.setText(data.get(position));
+    NotesModel notesModel=model.get(position);
+        textViewtitle.setText(notesModel.getTitle());
+        textViewdesc.setText(notesModel.getDescription());
         // cardView.setOnClickListener(this);
 
     }
 
     public int getItemCount() {
-        return data.size();
+        return model.size();
     }
 
-    public void addNote(String strdata) {
-        data.add(strdata);
+    public void addNote(NotesModel notesModel) {
+        model.add(notesModel);
         notifyDataSetChanged();
     }
 
@@ -61,22 +65,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
 
         public TaskHolder(View itemView) {
             super(itemView);
-            textView = (AppCompatTextView) itemView.findViewById(R.id.mytextView);
-            cardView = (CardView) itemView.findViewById(R.id.myCardView);
+            textViewtitle = (AppCompatTextView) itemView.findViewById(R.id.titletextview);
+            textViewdesc = (AppCompatTextView) itemView.findViewById(R.id.descriptiontextview);
+           // cardView = (CardView) itemView.findViewById(R.id.myCardView);
             // Toast.makeText(this,""+textView.getText().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    public void addItem(String information) {
-        data.add(information);
-        notifyItemInserted(data.size());
+    public void addItem(NotesModel notesModel) {
+        model.add(notesModel);
+        notifyItemInserted(model.size());
+    }
+
+    public void addItem(NotesModel notesModel, int pos) {
+        removeItem(pos);
+        model.add(pos,notesModel);
+        notifyDataSetChanged();
     }
 
     public void removeItem(int position) {
-        data.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, data.size());
+        model.remove(position);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
