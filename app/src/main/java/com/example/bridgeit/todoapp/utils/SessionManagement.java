@@ -21,7 +21,7 @@ public class SessionManagement {
     public void  register(UserModel userModel){
         userEditor.putString(Constants.keyname, userModel.getFullname());
         userEditor.putString(Constants.keyemail, userModel.getEmail());
-        userEditor.putString(Constants.keymobileno, userModel.getMobile());
+        userEditor.putString(Constants.keymobileno, userModel.getMobileNo());
         userEditor.putString(Constants.keypassword, userModel.getPassword());
         userEditor.putBoolean(Constants.is_login, false);
         userEditor.commit();

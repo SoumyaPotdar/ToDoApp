@@ -1,6 +1,8 @@
 package com.example.bridgeit.todoapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +10,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -40,57 +43,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_login);
         initView();
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d("signin", "onAuthStateChanged:signed in" + user.getUid());
-                } else
-                    //user is signed out
-                    Log.d("signout", "onAuthStateChanged:signed out");
-            }
 
-        };
     }
-
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-
-    public void signin(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("login", "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w("loginfail", "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(LoginActivity.this, "login done", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-
-
 
     @Override
     public void initView() {
@@ -107,7 +61,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         createaccounttextview.setOnClickListener(this);
         signingoogleimageview.setOnClickListener(this);
         signinfbimageview.setOnClickListener(this);
-        mAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -127,65 +80,58 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.loginbutton:
-                /*SharedPreferences pref = getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);*/
-                useremail = useremailedittext.getText().toString();
-                user_password = userpasswordedittext.getText().toString();
-                boolean b;
-                session = new SessionManagement(this);
-                b = validate();
-                if (b) {
-                        Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        signin(useremailedittext.getText().toString(),userpasswordedittext.getText().toString());
-                        Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, R.string.invalid_login, Toast.LENGTH_SHORT).show();
-                }
-                break;
+              userlogin();
+            break;
 
-
-               /*useremail = pref.getString(Constants.keyemail, Constants.value);
-                user_password = pref.getString(Constants.keypassword, Constants.value);
-
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putBoolean(Constants.is_login,true);
-                editor.commit();
-                Log.i(TAG, "onClick: " + useremail + "vsfd" + user_password);
-                boolean b = false;
-                b = validate();
-                if (b) {
-                    if (useremailedittext.getText().toString().equals(useremail) && userpasswordedittext.getText().toString().equals(user_password)) {
-                        Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, R.string.not_registered, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, R.string.invalid_login, Toast.LENGTH_SHORT).show();
-                }
-                break;
-*/
             case R.id.createaccounttextview:
-                Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
-                startActivity(i);
-                break;
+            Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
+            startActivity(i);
+            break;
             case R.id.forgotpassTextview:
 
-                break;
+            break;
             case R.id.fbImageview:
 
 
-                break;
+            break;
             case R.id.googleImageview:
 
-                break;
+            break;
         }
+
+}
+
+    public  void userlogin() {
+        useremail = useremailedittext.getText().toString();
+        user_password = userpasswordedittext.getText().toString();
+        if(TextUtils.isEmpty(useremail)){
+            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(user_password)){
+            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
+        }
+        mAuth.signInWithEmailAndPassword(useremail, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    SharedPreferences userPref;
+                    userPref =getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor userEditor = userPref.edit();
+                    userEditor.putString("uid",task.getResult().getUser().getUid()).commit();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(),ToDoMainActivity.class));
+                    //finish();
+                }else {
+                    Toast.makeText(LoginActivity.this, "Enter valid Email and password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
     }
 
 
-}
+
+
 
 

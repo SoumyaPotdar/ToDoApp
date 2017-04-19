@@ -1,13 +1,19 @@
 package com.example.bridgeit.todoapp.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -16,6 +22,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.adapter.RecyclerAdapter;
@@ -26,9 +33,8 @@ import com.example.bridgeit.todoapp.utils.SessionManagement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoMainActivity extends BaseActivity implements View.OnClickListener {
+public class ToDoMainActivity extends BaseActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerView;
-   // AppCompatTextView getdatatextview;
     boolean isView = false;
     AppCompatButton userlogoutbutton;
     SessionManagement session;
@@ -37,24 +43,30 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     RecyclerAdapter recyclerAdapter;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
+    Toolbar toolbar;
     List<NotesModel> models;
-
+    DrawerLayout drawer;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_navigation_main);
         notesDataBaseHandler=new NotesDataBaseHandler(this);
         models = notesDataBaseHandler.getAllNotes();
         initView();
         List<NotesModel> data = new ArrayList<>();
 
+        setSupportActionBar(toolbar);
+        //toolbar.setVisibility(View.GONE);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        //toolbar.setVisibility(View.GONE);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerAdapter= new RecyclerAdapter(getApplicationContext(), models);
         recyclerView.setAdapter(recyclerAdapter);
-
-
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
 
@@ -103,7 +115,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
             }
         });
-
+        fabupdate.setOnClickListener(this);
     }
 
     @Override
@@ -114,8 +126,8 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
         session = new SessionManagement(this);
         fabupdate = (FloatingActionButton) findViewById(R.id.nav_fab);
-        fabupdate.setOnClickListener(this);
 
+        drawer= (DrawerLayout) findViewById(R.id.drawer_layout);
         editdataedittext=(AppCompatEditText)findViewById(R.id.fragmentdiscriptionedittext);
         initSwipe();
     }
@@ -255,5 +267,19 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
     public void updateRecycler() {
         recyclerView.setAdapter(recyclerAdapter);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_notes:
+
+                Fragment fragment=new NoteFragment();
+                getFragmentManager().beginTransaction().replace(R.id.fragment,fragment).commit();
+                drawer.closeDrawers();
+                break;
+        }
+        return true;
+
     }
 }

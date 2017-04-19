@@ -1,17 +1,29 @@
 package com.example.bridgeit.todoapp.model;
 
-
 public class UserModel {
 
-    String fullname;
-    String password;
-    String mobile;
-    String email;
+    private   String fullname;
+    private   String password;
+     private String mobileNo;
+    private String email;
+
+   /* public UserModel( String fullname, String password, String mobileNo, String email) {
+        id=1;
+        this.fullname = fullname;
+        this.password = password;
+        this.mobileNo = mobileNo;
+        this.email = email;
+    }*/
+
+    public UserModel() {
+
+    }
 
     public String getFullname()
     {
         return fullname;
     }
+
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
@@ -25,12 +37,12 @@ public class UserModel {
         this.password = password;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 
     public String getEmail() {

@@ -6,8 +6,10 @@ public class NotesModel
     String description;
     int id;
 
-    public NotesModel(String title, String description)
+
+    public NotesModel(int id, String title, String description)
     {
+        this.id=id;
         this.title=title;
         this.description=description;
     }
@@ -16,9 +18,19 @@ public class NotesModel
 
     }
 
+    public NotesModel(String title, String description) {
+        this.title=title;
+        this.description=description;
+    }
+
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public String getTitle() {
         return title;

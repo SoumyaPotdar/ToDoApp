@@ -12,20 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:visibility="gone">
+       >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colororg"
+            android:background="@color/colorPrimary"
+
       />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/actvity_recycler"
-        />
+   <!-- <include layout="@layout/actvity_recycler"
+        />-->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerview"
+        >
+    </android.support.v7.widget.RecyclerView>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/fragment"
+
+        android:layout_height="match_parent">
+
+    </FrameLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/nav_fab"
         android:layout_width="wrap_content"

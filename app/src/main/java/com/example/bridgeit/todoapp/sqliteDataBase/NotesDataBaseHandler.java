@@ -20,6 +20,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     final  static int DATABASE_VERSION = 1;
     private  static  final String DATABASE_NAME="NotesManager";
     private static final String TABLE_NOTES="Notes";
+    private static final String key_id="id";
     private  static  String  key_title="title";
     private  static  final String key_description="description";
 
@@ -32,7 +33,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES+"("+key_title+" TEXT,"+ key_description+" TEXT)";
+        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES + "("+ key_id +" TEXT,"+ key_title+" TEXT,"+ key_description+" TEXT)";
         db.execSQL(CREATE_TABLE_NOTES);
     }
 
@@ -49,6 +50,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     public  void addNote(NotesModel notesModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(key_id,notesModel.getId());
         values.put(key_title, notesModel.getTitle());
         values.put(key_description, notesModel.getDescription());
 
@@ -62,6 +64,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(key_id,model.getId());
         values.put(key_title, model.getTitle());
         values.put(key_description, model.getDescription());
 
@@ -73,14 +76,14 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
 
 
     // code to get the single note
-   public NotesModel getNotes(String title) {
+   /*public NotesModel getNotes(String title) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NOTES, new String[]{key_title, key_description}, key_title = "?", new String[]{title}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NOTES, new String[]{key_id,key_title, key_description}, key_title = "?", new String[]{title}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        NotesModel notesModel = new NotesModel(cursor.getString(0), cursor.getString(1));
+        NotesModel notesModel = new NotesModel(cursor.getString(0), cursor.getString(1),cursor.getString(2));
         return notesModel;
-    }
+    }*/
 
 
 
