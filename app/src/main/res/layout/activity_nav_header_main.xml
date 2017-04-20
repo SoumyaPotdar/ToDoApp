@@ -18,7 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        android:background="@drawable/background_circle"
+        android:src="@android:m"
+        />
 
     <TextView
         android:layout_width="match_parent"

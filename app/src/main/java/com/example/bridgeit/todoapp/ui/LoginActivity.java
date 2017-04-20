@@ -56,6 +56,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         signingoogleimageview = (AppCompatImageView) findViewById(R.id.googleImageview);
         signinfbimageview = (AppCompatImageView) findViewById(R.id.fbImageview);
 
+
+
         userloginbutton.setOnClickListener(this);
         forgotpasswordtextview.setOnClickListener(this);
         createaccounttextview.setOnClickListener(this);
@@ -80,7 +82,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.loginbutton:
-              userlogin();
+               /* boolean check=validate();
+                if(check) {*/
+                    userlogin();
+               /* }else
+                Toast.makeText(this, R.string.invalid_login,Toast.LENGTH_SHORT).show();*/
             break;
 
             case R.id.createaccounttextview:
@@ -104,6 +110,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public  void userlogin() {
         useremail = useremailedittext.getText().toString();
         user_password = userpasswordedittext.getText().toString();
+
         if(TextUtils.isEmpty(useremail)){
             Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
             return;

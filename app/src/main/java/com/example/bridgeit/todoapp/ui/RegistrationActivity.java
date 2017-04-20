@@ -84,11 +84,13 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     flag = flag && false;
                 }
                 if (regmobilenoedittext.getText().toString().matches(mobilePattern)) {
+/*
                     Boolean b = regmobilenoedittext.getText().toString().matches(mobilePattern);
+*/
                     flag = flag && true;
                 }
                 if (!regmobilenoedittext.getText().toString().matches(mobilePattern)) {
-                    Boolean b = regmobilenoedittext.getText().toString().matches(mobilePattern);
+           /*         Boolean b = regmobilenoedittext.getText().toString().matches(mobilePattern);*/
                     Toast.makeText(getApplicationContext(), R.string.invalid_number, Toast.LENGTH_SHORT).show();
                     flag = flag && false;
                 }
@@ -105,13 +107,30 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
     private void updateUser() {
         if (!TextUtils.isEmpty(userId)) {
-            mDatabase.child(userId).child("name").setValue(name);
-            mDatabase.child(userId).child("email").setValue(email);
-            mDatabase.child(userId).child("mobileno").setValue(mobileno);
-            mDatabase.child(userId).child("password").setValue(password);
+            mDatabase.child("users").child(userId).child("name").setValue(name);
+            mDatabase.child("users").child(userId).child("email").setValue(email);
+            mDatabase.child("users").child(userId).child("mobileno").setValue(mobileno);
+            mDatabase.child("users").child(userId).child("password").setValue(password);
         }
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.registrationbutton:
+                userRegistration();
+              /*  boolean check = validate();
+                if (check){
+                    userRegistration();
+                }
+                else{
+            Toast.makeText(this, R.string.register_again, Toast.LENGTH_SHORT).show();
+        }*/
+                break;
+
+        }
+    }
 
     private void userRegistration() {
         name = regnameedittext.getText().toString();
@@ -119,23 +138,46 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         email = regemailedittext.getText().toString();
         password = regpasswordedittext.getText().toString();
 
+        if(TextUtils.isEmpty(name)){
+            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(mobileno)){
+            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
+        }
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+
                     final String userId = task.getResult().getUser().getUid();
-                    calltodatabase(userId);
-                } else {
-                    Toast.makeText(RegistrationActivity.this, "error", Toast.LENGTH_SHORT).show();
-                }
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    UserModel user = new UserModel();
+                    user.setFullname(name);
+                    user.setEmail(email);
+                    user.setMobileNo(mobileno);
+                    user.setPassword(password);
+                    mDatabase.child("users").child(userId).setValue(user);
+                    startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
+                    finish();
+                    //calltodatabase(userId);
+                } /*else {
+                    Toast.makeText(RegistrationActivity.this,R.string.register_again, Toast.LENGTH_SHORT).show();
+                }*/
             }
         });
-
     }
 
     private void calltodatabase(String userId) {
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         UserModel user = new UserModel();
         user.setFullname(name);
@@ -143,17 +185,8 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         user.setMobileNo(mobileno);
         user.setPassword(password);
         mDatabase.child("users").child(userId).setValue(user);
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
         finish();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.registrationbutton:
-                userRegistration();
-                break;
-
-        }
-    }
 }
