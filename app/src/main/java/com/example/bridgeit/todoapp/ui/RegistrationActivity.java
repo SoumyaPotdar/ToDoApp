@@ -1,37 +1,26 @@
 package com.example.bridgeit.todoapp.ui;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
-import com.example.bridgeit.todoapp.model.UserModel;
 import com.example.bridgeit.todoapp.presenter.RegistrationPresenter;
 import com.example.bridgeit.todoapp.utils.Constants;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class RegistrationActivity extends BaseActivity implements RegistrationViewInterface {
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     AppCompatEditText regnameedittext;
     AppCompatEditText regemailedittext;
     AppCompatEditText regmobilenoedittext;
@@ -41,9 +30,12 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
     AppCompatButton savebutton;
     RegistrationPresenter registrationPresenter;
     String userId;
-
+    SharedPreferences userPref;
+    ProgressDialog progressDialog;
     SessionManagement session;
     boolean validateresult;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,12 +52,10 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
         regmobilenoedittext = (AppCompatEditText) findViewById(R.id.mobilenoedittext);
         regpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordedittext);
         savebutton = (AppCompatButton) findViewById(R.id.registrationbutton);
-        registrationPresenter=new RegistrationPresenter(this,this);
+        registrationPresenter = new RegistrationPresenter(this, this);
+        progressDialog = new ProgressDialog(this);
 
-        name = regnameedittext.getText().toString();
-        mobileno = regmobilenoedittext.getText().toString();
-        email = regemailedittext.getText().toString();
-        password = regpasswordedittext.getText().toString();
+
 
     }
 
@@ -79,39 +69,46 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
             Toast.makeText(getApplicationContext(), R.string.empty_field, Toast.LENGTH_SHORT).show();
             flag = flag && false;
         } else {
+            boolean toast = true;
+
             if (regnameedittext.length() > 25) {
-
-                Toast.makeText(getApplicationContext(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
+                if(toast) {
+                    Toast.makeText(getApplicationContext(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
+                    toast = false;
+                }
                 flag = flag && false;
-
-                if (regemailedittext.getText().toString().matches(emailPattern)) {
-                    //Toast.makeText(getApplicationContext(),"valid email address",Toast.LENGTH_SHORT).show();
-                    flag = flag && true;
-                }
-                if (!regemailedittext.getText().toString().matches(emailPattern)) {
-                    Toast.makeText(getApplicationContext(), R.string.invalid_email, Toast.LENGTH_SHORT).show();
-                    flag = flag && false;
-                }
-                if (regmobilenoedittext.getText().toString().matches(mobilePattern)) {
-/*
-                    Boolean b = regmobilenoedittext.getText().toString().matches(mobilePattern);
-*/
-                    flag = flag && true;
-                }
-                if (!regmobilenoedittext.getText().toString().matches(mobilePattern)) {
-           /*         Boolean b = regmobilenoedittext.getText().toString().matches(mobilePattern);*/
-                    Toast.makeText(getApplicationContext(), R.string.invalid_number, Toast.LENGTH_SHORT).show();
-                    flag = flag && false;
-                }
-                if (passwordlen < 8) {
-                    Toast.makeText(getApplicationContext(), R.string.invalid_pass, Toast.LENGTH_SHORT).show();
-                    flag = flag && false;
-                }
             }
-            return flag;
-        }
-        return  flag;
 
+            if (regemailedittext.getText().toString().matches(emailPattern)) {
+                //Toast.makeText(getApplicationContext(),"valid email address",Toast.LENGTH_SHORT).show();
+                flag = flag && true;
+            }
+            if (!regemailedittext.getText().toString().matches(emailPattern)) {
+                if(toast){
+                    Toast.makeText(getApplicationContext(), R.string.invalid_email, Toast.LENGTH_SHORT).show();
+                    toast=false;
+                }
+                flag = flag && false;
+            }
+            if (regmobilenoedittext.getText().toString().matches(mobilePattern)) {
+                flag = flag && true;
+            }
+            if (!regmobilenoedittext.getText().toString().matches(mobilePattern)) {
+                if(toast) {
+                    Toast.makeText(getApplicationContext(), R.string.invalid_number, Toast.LENGTH_SHORT).show();
+                    toast=false;
+                }
+                    flag = flag && false;
+            }
+            if (passwordlen < 8) {
+                if(toast) {
+                    Toast.makeText(getApplicationContext(), R.string.invalid_pass, Toast.LENGTH_SHORT).show();
+                    toast=false;
+                }
+                flag = flag && false;
+            }
+        }
+        return flag;
     }
 
     private void updateUser() {
@@ -128,91 +125,52 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registrationbutton:
-                registrationPresenter.requestForRegister(name,email,password,mobileno);
+                if (validate()) {
+                    name = regnameedittext.getText().toString();
+                    mobileno = regmobilenoedittext.getText().toString();
+                    email = regemailedittext.getText().toString();
+                    password = regpasswordedittext.getText().toString();
+                    registrationPresenter.requestForRegister(name, email, password, mobileno);
+                } else {
 
-                userRegistration();
-              /*  boolean check = validate();
-                if (check){
-                    userRegistration();
                 }
-                else{
-            Toast.makeText(this, R.string.register_again, Toast.LENGTH_SHORT).show();
-        }*/
                 break;
 
         }
     }
 
-    private void userRegistration() {
 
-        if(TextUtils.isEmpty(name)){
-            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(TextUtils.isEmpty(mobileno)){
-            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
-        }
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-
-                    final String userId = task.getResult().getUser().getUid();
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-                    UserModel user = new UserModel();
-                    user.setFullname(name);
-                    user.setEmail(email);
-                    user.setMobileNo(mobileno);
-                    user.setPassword(password);
-                    mDatabase.child("users").child(userId).setValue(user);
-                    startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
-                    finish();
-                    calltodatabase(userId);
-                } /*else {
-                    Toast.makeText(RegistrationActivity.this,R.string.register_again, Toast.LENGTH_SHORT).show();
-                }*/
-            }
-        });
-    }
-
-    private void calltodatabase(String userId) {
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        UserModel user = new UserModel();
-        user.setFullname(name);
-        user.setEmail(email);
-        user.setMobileNo(mobileno);
-        user.setPassword(password);
-        mDatabase.child("users").child(userId).setValue(user);
-        startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
+    @Override
+    public void registrationSuccess(String message) {
+        /*userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, MODE_PRIVATE);
+        userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = userPref.edit();
+        editor.putString("keyname", model.getFullname());
+        editor.putString("keyemail", model.getEmail());
+        editor.putString("keymobileno", model.getMobileNo());
+        editor.putString("keypassword", model.getPassword());
+        editor.commit();
+*/
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
     @Override
-    public void registrationSuccess(UserModel userModel) {
-
-    }
-
-    @Override
     public void registrationFailure(String message) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showProgressDailog(String message) {
-
+        if (!isFinishing()) {
+            progressDialog.setMessage(message);
+            progressDialog.show();
+        }
     }
 
     @Override
     public void hideProgressDailog() {
-
+        if(!isFinishing() && progressDialog != null)
+            progressDialog.dismiss();
     }
 }

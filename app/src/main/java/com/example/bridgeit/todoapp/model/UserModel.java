@@ -6,6 +6,7 @@ public class UserModel {
     private   String password;
      private String mobileNo;
     private String email;
+    private String id;
 
    /* public UserModel( String fullname, String password, String mobileNo, String email) {
         id=1;
@@ -17,6 +18,14 @@ public class UserModel {
 
     public UserModel() {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullname()

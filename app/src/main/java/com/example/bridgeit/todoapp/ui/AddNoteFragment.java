@@ -59,7 +59,6 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
         savebutton = (AppCompatButton) view.findViewById(R.id.savedatabutton);
         savebutton.setOnClickListener(this);
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         uid = userPref.getString("uid", "null");
@@ -101,15 +100,11 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
                     notemod = null;
                 }
                 }
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-
             }
-
         });
     }
 
@@ -118,8 +113,6 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
         da.setId(index);
         getActivity().getFragmentManager().popBackStackImmediate();
         databaseReference.child("userdata").child(uid).child("fasdsda").child(String.valueOf(index)).setValue(da);
-
-
     }
 }
 

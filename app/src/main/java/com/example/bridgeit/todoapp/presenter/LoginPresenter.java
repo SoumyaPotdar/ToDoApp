@@ -19,12 +19,11 @@ public class LoginPresenter implements LoginPresenterInterface {
     @Override
     public void requestForLogin(String email, String password) {
        interactor.requestForLogin(email,password);
-
     }
 
     @Override
-    public void loginSuccess(UserModel model) {
-        viewInterface.loginSuccess(model);
+    public void loginSuccess(UserModel model, String uid) {
+        viewInterface.loginSuccess(model,uid);
     }
 
     @Override
@@ -38,7 +37,8 @@ public class LoginPresenter implements LoginPresenterInterface {
     }
 
     @Override
-    public void hideProgressDialog() {
+    public void hideProgressDialog()
+    {
         viewInterface.hideProgressDialog();
     }
 }

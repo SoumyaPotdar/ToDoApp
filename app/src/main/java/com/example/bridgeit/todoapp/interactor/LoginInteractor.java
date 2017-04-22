@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.UserModel;
 import com.example.bridgeit.todoapp.presenter.LoginPresenter;
@@ -43,7 +44,7 @@ public class LoginInteractor implements LoginInteractorInterface{
     public void requestForLogin(String email, String password)
     {
         loginPresenter.showProgressDialog("Please Wait...");
-
+        mAuth=FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -51,22 +52,20 @@ public class LoginInteractor implements LoginInteractorInterface{
                     String uid=task.getResult().getUser().getUid();
                     getUserloginData(uid);
 
-
-
                 }else {
-
+                    loginPresenter.loginFailure(context.getString(R.string.invalid_login));
                 }
             }
         });
     }
 
-    public  void getUserloginData(String uid) {
+    public  void getUserloginData(final String uid) {
 
         databaseReference.child("users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
              UserModel model= snapshot.getValue(UserModel.class);
-                loginPresenter.loginSuccess(model);
+                loginPresenter.loginSuccess(model,uid);
 
             }
 

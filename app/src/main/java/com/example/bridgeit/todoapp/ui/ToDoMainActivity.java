@@ -12,7 +12,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -70,7 +72,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
         //toolbar.setVisibility(View.GONE);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerAdapter= new RecyclerAdapter(getApplicationContext(), models);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
@@ -152,11 +154,11 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
             case R.id.changeview:
                 if (!isView) {
-                    recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,1));
 
                     isView = true;
                 } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     isView = false;
                 }

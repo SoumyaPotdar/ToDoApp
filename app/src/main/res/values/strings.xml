@@ -27,4 +27,6 @@
     <string name="auth_failed">Authentication failed</string>
     <string name="auth_success">Authentication Success</string>
     <string name="register_again">Please fill details correctly...Register again...</string>
+    <string name="reg_failed">Registration Failed...</string>
+    <string name="register_success">registered successfully</string>
 </resources>

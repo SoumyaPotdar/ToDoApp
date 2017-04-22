@@ -23,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginActivity extends BaseActivity implements LoginViewInterface {
+
+    private String TAG = "LoginActivity";
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     AppCompatEditText useremailedittext, userpasswordedittext;
@@ -34,7 +37,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
     LoginPresenter presenter;
     SessionManagement session;
     SharedPreferences userPref;
-    private String TAG = "LoginActivity";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,14 +70,14 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
     }
 
     private boolean validate() {
-
+        boolean valid=false;
         if (useremailedittext.getText().toString().length() == 0 || userpasswordedittext.getText().toString().length() == 0) {
             Toast.makeText(getApplicationContext(), R.string.blank, Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() == 8) {
-            return true && session.login(useremail, user_password);
+            valid= false;
+        } else if (useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() >=8 ) {
+            valid =true ;
         }
-        return false;
+        return valid;
     }
 
 
@@ -86,11 +89,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
                 user_password = userpasswordedittext.getText().toString();
                 if(validate()) {
                     presenter.requestForLogin(useremail, user_password);
-
                 }
-                else
-                    Toast.makeText(this, R.string.invalid_login,Toast.LENGTH_SHORT).show();
-
             break;
 
             case R.id.createaccounttextview:
@@ -108,17 +107,15 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
 
             break;
         }
-
 }
 
-
-
     @Override
-    public void loginSuccess(UserModel model) {
+    public void loginSuccess(UserModel model, String uid) {
         userPref=getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=userPref.edit();
         editor.putString("keyemail",model.getEmail());
         editor.putString("keyname",model.getFullname());
+        editor.putString("uid",uid);
         editor.commit();
 
         Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
@@ -128,8 +125,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
 
     @Override
     public void loginFailure(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
     }
+
 
     ProgressDialog progressDialog;
 
