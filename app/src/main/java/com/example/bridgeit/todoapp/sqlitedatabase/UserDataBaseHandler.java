@@ -1,4 +1,4 @@
-package com.example.bridgeit.todoapp.sqliteDataBase;
+package com.example.bridgeit.todoapp.sqlitedatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.bridgeit.todoapp.model.NotesModel;
 import com.example.bridgeit.todoapp.model.UserModel;
 
 import java.util.ArrayList;

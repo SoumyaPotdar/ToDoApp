@@ -21,15 +21,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.adapter.RecyclerAdapter;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.NotesModel;
-import com.example.bridgeit.todoapp.sqliteDataBase.NotesDataBaseHandler;
+import com.example.bridgeit.todoapp.sqlitedatabase.NotesDataBaseHandler;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,10 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     Toolbar toolbar;
     List<NotesModel> models;
     DrawerLayout drawer;
+    DatabaseReference databaseReference;
+    String uid;
+    int index;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -252,8 +258,11 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    recyclerAdapter.removeItem(position);
-                    notesDataBaseHandler.deleteNote(models.get(position));
+                    /*recyclerAdapter.removeItem(position);
+                    notesDataBaseHandler.deleteNote(models.get(position));*/
+                  databaseReference=FirebaseDatabase.getInstance().getReference();
+
+                    databaseReference.child("userdata").child(uid).child("fasdsda").child(String.valueOf(index)).removeValue();
                 } else {
 
                     int edit_position = position;

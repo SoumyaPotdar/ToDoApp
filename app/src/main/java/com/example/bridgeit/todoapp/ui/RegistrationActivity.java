@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.UserModel;
+import com.example.bridgeit.todoapp.presenter.RegistrationPresenter;
 import com.example.bridgeit.todoapp.utils.Constants;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class RegistrationActivity extends BaseActivity implements View.OnClickListener {
+public class RegistrationActivity extends BaseActivity implements RegistrationViewInterface {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     AppCompatEditText regnameedittext;
@@ -38,6 +39,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     DatabaseReference mDatabase;
     String name, email, mobileno, password;
     AppCompatButton savebutton;
+    RegistrationPresenter registrationPresenter;
     String userId;
 
     SessionManagement session;
@@ -58,6 +60,13 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         regmobilenoedittext = (AppCompatEditText) findViewById(R.id.mobilenoedittext);
         regpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordedittext);
         savebutton = (AppCompatButton) findViewById(R.id.registrationbutton);
+        registrationPresenter=new RegistrationPresenter(this,this);
+
+        name = regnameedittext.getText().toString();
+        mobileno = regmobilenoedittext.getText().toString();
+        email = regemailedittext.getText().toString();
+        password = regpasswordedittext.getText().toString();
+
     }
 
     private boolean validate() {
@@ -119,6 +128,8 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registrationbutton:
+                registrationPresenter.requestForRegister(name,email,password,mobileno);
+
                 userRegistration();
               /*  boolean check = validate();
                 if (check){
@@ -133,10 +144,6 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void userRegistration() {
-        name = regnameedittext.getText().toString();
-        mobileno = regmobilenoedittext.getText().toString();
-        email = regemailedittext.getText().toString();
-        password = regpasswordedittext.getText().toString();
 
         if(TextUtils.isEmpty(name)){
             Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
@@ -169,7 +176,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     mDatabase.child("users").child(userId).setValue(user);
                     startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
                     finish();
-                    //calltodatabase(userId);
+                    calltodatabase(userId);
                 } /*else {
                     Toast.makeText(RegistrationActivity.this,R.string.register_again, Toast.LENGTH_SHORT).show();
                 }*/
@@ -189,4 +196,23 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         finish();
     }
 
+    @Override
+    public void registrationSuccess(UserModel userModel) {
+
+    }
+
+    @Override
+    public void registrationFailure(String message) {
+
+    }
+
+    @Override
+    public void showProgressDailog(String message) {
+
+    }
+
+    @Override
+    public void hideProgressDailog() {
+
+    }
 }

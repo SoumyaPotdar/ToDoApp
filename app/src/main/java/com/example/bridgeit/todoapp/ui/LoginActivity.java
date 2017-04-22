@@ -1,31 +1,28 @@
 package com.example.bridgeit.todoapp.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
+import com.example.bridgeit.todoapp.model.UserModel;
+import com.example.bridgeit.todoapp.presenter.LoginPresenter;
 import com.example.bridgeit.todoapp.utils.Constants;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
+
+public class LoginActivity extends BaseActivity implements LoginViewInterface {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     AppCompatEditText useremailedittext, userpasswordedittext;
@@ -34,7 +31,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     AppCompatImageView signingoogleimageview, signinfbimageview;
     String useremail, user_password;
     String emailPattern = Constants.email_pattern;
+    LoginPresenter presenter;
     SessionManagement session;
+    SharedPreferences userPref;
     private String TAG = "LoginActivity";
 
     @Override
@@ -48,6 +47,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void initView() {
+
+        presenter=new LoginPresenter(this, this);
+
         useremailedittext = (AppCompatEditText) findViewById(R.id.loginEdittext);
         userpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordEdittext);
         forgotpasswordtextview = (AppCompatTextView) findViewById(R.id.forgotpassTextview);
@@ -55,8 +57,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         userloginbutton = (AppCompatButton) findViewById(R.id.loginbutton);
         signingoogleimageview = (AppCompatImageView) findViewById(R.id.googleImageview);
         signinfbimageview = (AppCompatImageView) findViewById(R.id.fbImageview);
-
-
 
         userloginbutton.setOnClickListener(this);
         forgotpasswordtextview.setOnClickListener(this);
@@ -82,11 +82,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.loginbutton:
-               /* boolean check=validate();
-                if(check) {*/
-                    userlogin();
-               /* }else
-                Toast.makeText(this, R.string.invalid_login,Toast.LENGTH_SHORT).show();*/
+                useremail = useremailedittext.getText().toString();
+                user_password = userpasswordedittext.getText().toString();
+                if(validate()) {
+                    presenter.requestForLogin(useremail, user_password);
+
+                }
+                else
+                    Toast.makeText(this, R.string.invalid_login,Toast.LENGTH_SHORT).show();
+
             break;
 
             case R.id.createaccounttextview:
@@ -107,38 +111,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 }
 
-    public  void userlogin() {
-        useremail = useremailedittext.getText().toString();
-        user_password = userpasswordedittext.getText().toString();
 
-        if(TextUtils.isEmpty(useremail)){
-            Toast.makeText(this, "Enter valid Email ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(TextUtils.isEmpty(user_password)){
-            Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
-        }
-        mAuth.signInWithEmailAndPassword(useremail, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    SharedPreferences userPref;
-                    userPref =getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor userEditor = userPref.edit();
-                    userEditor.putString("uid",task.getResult().getUser().getUid()).commit();
-                    finish();
-                    startActivity(new Intent(getApplicationContext(),ToDoMainActivity.class));
-                    //finish();
-                }else {
-                    Toast.makeText(LoginActivity.this, "Enter valid Email and password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+
+    @Override
+    public void loginSuccess(UserModel model) {
+        userPref=getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=userPref.edit();
+        editor.putString("keyemail",model.getEmail());
+        editor.putString("keyname",model.getFullname());
+        editor.commit();
+
+        Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
+    @Override
+    public void loginFailure(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
+    ProgressDialog progressDialog;
 
+    @Override
+    public void showProgressDialog(String message) {
+        if(!isFinishing()){
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(message);
+            progressDialog.show();
+        }
+    }
 
-
-
+    @Override
+    public void hideProgressDialog() {
+        if(!isFinishing() && progressDialog != null)
+            progressDialog.dismiss();
+    }
+}

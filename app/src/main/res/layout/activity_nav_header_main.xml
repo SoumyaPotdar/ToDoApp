@@ -19,7 +19,7 @@
         android:layout_marginLeft="@dimen/margin"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:background="@drawable/background_circle"
-        android:src="@android:m"
+
         />
 
     <TextView

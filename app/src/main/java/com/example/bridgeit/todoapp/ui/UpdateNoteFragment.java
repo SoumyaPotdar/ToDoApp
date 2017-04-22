@@ -2,7 +2,6 @@ package com.example.bridgeit.todoapp.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
@@ -11,9 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bridgeit.todoapp.R;
-import com.example.bridgeit.todoapp.adapter.RecyclerAdapter;
 import com.example.bridgeit.todoapp.model.NotesModel;
-import com.example.bridgeit.todoapp.sqliteDataBase.NotesDataBaseHandler;
+import com.example.bridgeit.todoapp.sqlitedatabase.NotesDataBaseHandler;
 
 public class UpdateNoteFragment extends Fragment implements View.OnClickListener {
     AppCompatEditText titleedittext;
