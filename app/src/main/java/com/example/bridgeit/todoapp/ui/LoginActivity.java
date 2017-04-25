@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -18,6 +19,20 @@ import com.example.bridgeit.todoapp.model.UserModel;
 import com.example.bridgeit.todoapp.presenter.LoginPresenter;
 import com.example.bridgeit.todoapp.utils.Constants;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -31,20 +46,65 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
     AppCompatEditText useremailedittext, userpasswordedittext;
     AppCompatTextView forgotpasswordtextview, createaccounttextview;
     AppCompatButton userloginbutton;
-    AppCompatImageView signingoogleimageview, signinfbimageview;
     String useremail, user_password;
+    LoginButton fbloginbutton;
     String emailPattern = Constants.email_pattern;
     LoginPresenter presenter;
     SessionManagement session;
     SharedPreferences userPref;
+    CallbackManager callbackManager;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager=CallbackManager.Factory.create();
+
         setContentView(R.layout.activity_login);
+        AppEventsLogger.activateApp(this);
         initView();
-        mAuth = FirebaseAuth.getInstance();
+
+        fbloginbutton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebook(loginResult.getAccessToken());
+               /* startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
+                finish();           */
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+    }
+
+    private void handleFacebook(AccessToken accessToken) {
+        AuthCredential credential= FacebookAuthProvider.getCredential(accessToken.getToken());
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(LoginActivity.this,R.string.auth_failed,Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+
+        });
 
     }
 
@@ -53,20 +113,18 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
 
         presenter=new LoginPresenter(this, this);
 
+        mAuth = FirebaseAuth.getInstance();
+        fbloginbutton=(LoginButton)findViewById(R.id.buttonfacebooklogin);
+        fbloginbutton.setReadPermissions("email", "public_profile");
         useremailedittext = (AppCompatEditText) findViewById(R.id.loginEdittext);
         userpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordEdittext);
         forgotpasswordtextview = (AppCompatTextView) findViewById(R.id.forgotpassTextview);
         createaccounttextview = (AppCompatTextView) findViewById(R.id.createaccounttextview);
         userloginbutton = (AppCompatButton) findViewById(R.id.loginbutton);
-        signingoogleimageview = (AppCompatImageView) findViewById(R.id.googleImageview);
-        signinfbimageview = (AppCompatImageView) findViewById(R.id.fbImageview);
 
         userloginbutton.setOnClickListener(this);
         forgotpasswordtextview.setOnClickListener(this);
         createaccounttextview.setOnClickListener(this);
-        signingoogleimageview.setOnClickListener(this);
-        signinfbimageview.setOnClickListener(this);
-
     }
 
     private boolean validate() {
@@ -74,10 +132,15 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
         if (useremailedittext.getText().toString().length() == 0 || userpasswordedittext.getText().toString().length() == 0) {
             Toast.makeText(getApplicationContext(), R.string.blank, Toast.LENGTH_SHORT).show();
             valid= false;
-        } else if (useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() >=8 ) {
-            valid =true ;
+        } else {
+            if (useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() >= 6) {
+                valid = true;
+            }
+            if (!useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() < 6) {
+                valid = false;
+            }
         }
-        return valid;
+         return  valid;
     }
 
 
@@ -99,13 +162,10 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
             case R.id.forgotpassTextview:
 
             break;
-            case R.id.fbImageview:
+            case R.id.buttonfacebooklogin:
 
+                break;
 
-            break;
-            case R.id.googleImageview:
-
-            break;
         }
 }
 
@@ -144,5 +204,11 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface {
     public void hideProgressDialog() {
         if(!isFinishing() && progressDialog != null)
             progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 }

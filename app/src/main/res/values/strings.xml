@@ -12,7 +12,7 @@
     <string name="reg_failure">Register Again.....</string>
     <string name="invalid_email">Please Enter Valid Email Address</string>
     <string name="invalid_number">Please enter valid 10 digit phone number</string>
-    <string name="invalid_pass">Password length should be 8 charecters</string>
+    <string name="invalid_pass">Password length should be 6 charecters</string>
     <string name="login_success">Login Successfull</string>
     <string name="invalid_login">User Name and Passsword is not Valid</string>
     <string name="blank">Please fill empty fields</string>
@@ -29,4 +29,7 @@
     <string name="register_again">Please fill details correctly...Register again...</string>
     <string name="reg_failed">Registration Failed...</string>
     <string name="register_success">registered successfully</string>
+    <string name="facebook_app_id">1669407216411840</string>
+    <string name="facebook_client_token">f18c8390f69043932db478674f1201de</string>
+
 </resources>

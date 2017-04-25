@@ -14,6 +14,17 @@
        android:textSize="@dimen/fontsize"
        android:text="@string/addnotestv"
        />
+
+   <android.support.v7.widget.AppCompatEditText
+       android:id="@+id/dateedittext"
+       android:layout_height="wrap_content"
+       android:layout_width="match_parent"
+       android:layout_marginLeft="@dimen/margin"
+       android:layout_marginTop="@dimen/margin"
+       android:hint="Date ">
+   </android.support.v7.widget.AppCompatEditText>
+
+
    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/fragmenttitledittext"
        android:layout_height="wrap_content"

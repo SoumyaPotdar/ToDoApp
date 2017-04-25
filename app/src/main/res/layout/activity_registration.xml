@@ -62,7 +62,7 @@
                 android:text="@string/emai"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/fontsize"
-                android:textStyle="bold" />
+                />
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/emailedittext"

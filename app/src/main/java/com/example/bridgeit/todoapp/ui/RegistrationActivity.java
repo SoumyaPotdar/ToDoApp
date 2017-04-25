@@ -100,7 +100,7 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
                 }
                     flag = flag && false;
             }
-            if (passwordlen < 8) {
+            if (passwordlen < 6) {
                 if(toast) {
                     Toast.makeText(getApplicationContext(), R.string.invalid_pass, Toast.LENGTH_SHORT).show();
                     toast=false;
@@ -130,7 +130,7 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
                     mobileno = regmobilenoedittext.getText().toString();
                     email = regemailedittext.getText().toString();
                     password = regpasswordedittext.getText().toString();
-                    registrationPresenter.requestForRegister(name, email, password, mobileno);
+                    registrationPresenter.requestForRegister(name, email, mobileno, password);
                 } else {
 
                 }

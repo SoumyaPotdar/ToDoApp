@@ -9,5 +9,4 @@ public interface LoginViewInterface extends View.OnClickListener {
        public void loginFailure(String message);
        public void showProgressDialog(String message);
        public void hideProgressDialog();
-
 }
