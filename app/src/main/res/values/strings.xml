@@ -29,7 +29,6 @@
     <string name="register_again">Please fill details correctly...Register again...</string>
     <string name="reg_failed">Registration Failed...</string>
     <string name="register_success">registered successfully</string>
-    <string name="facebook_app_id">1669407216411840</string>
-    <string name="facebook_client_token">f18c8390f69043932db478674f1201de</string>
+    <string name="facebook_app_id">235628310176633</string>
 
 </resources>

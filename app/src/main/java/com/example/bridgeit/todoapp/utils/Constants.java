@@ -12,4 +12,11 @@ public class Constants {
     public static String email_pattern="^[a-zA-Z0-9]{3,}@([a-z]){3,}\\.[a-z]+$";
     public static String preferencekey="splashPreference";
     public static final String is_login = "isLogin";
+    public static String userRegister;
+    public static String userEmail;
+    public static String profilePic;
+    public static String firstName;
+    public static String lastName;
+    public static String facebookLogin;
+    public static String profileURL;
 }
