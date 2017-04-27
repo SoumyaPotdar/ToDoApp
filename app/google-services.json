@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1028491427204-129rcms2r4tijt2nlbbaacitp6kfck2m.apps.googleusercontent.com",
+          "client_id": "1028491427204-788bq27au1ucas59nee0rkrfq3ld8kji.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.bridgeit.todoapp",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "1028491427204-efsffqclf6gfkf12j3s1d62lojkec72m.apps.googleusercontent.com",
+          "client_id": "1028491427204-4bfuscdvl9lp8ue6dnpsrnl4kjov4eb1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAokdbKMC_k85GVtL_7GMcN4BvI7TcmJnc"
+          "current_key": "AIzaSyDzdjOm_qpKAD7n8ENB-kGtOkseq6U74T8"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1028491427204-efsffqclf6gfkf12j3s1d62lojkec72m.apps.googleusercontent.com",
+              "client_id": "1028491427204-4bfuscdvl9lp8ue6dnpsrnl4kjov4eb1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

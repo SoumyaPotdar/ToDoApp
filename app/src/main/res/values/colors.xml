@@ -5,4 +5,7 @@
     <color name="colorAccent">#02030a</color>
     <color name="coloryell">#e7be64</color>
     <color name="colororg">#b9958a</color>
+    <color name="colorwhite">#f4f3f3</color>
+    <color name="colorred">#d64242</color>
+
 </resources>

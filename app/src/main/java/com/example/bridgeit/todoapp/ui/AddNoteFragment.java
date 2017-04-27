@@ -42,8 +42,8 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
     SharedPreferences userPref;
     DatePickerDialog datePickerDialog;
     private String uid;
-
     NotesModel notemod;
+
     public AddNoteFragment(ToDoMainActivity toDoMainActivity) {
         this.toDoMainActivity = toDoMainActivity;
     }
@@ -61,7 +61,6 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        datedisplay =datepickeredittext.getText().toString();
 
         View view = inflater.inflate(R.layout.fragment_container, container, false);
 
@@ -84,6 +83,8 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.savedatabutton:
+
+                datedisplay =datepickeredittext.getText().toString();
                 notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
                 notesModel = new NotesModel();
                 notesModel.setId(0);

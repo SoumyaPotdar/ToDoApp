@@ -30,6 +30,7 @@ import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.NotesModel;
 import com.example.bridgeit.todoapp.sqlitedatabase.NotesDataBaseHandler;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +52,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     List<NotesModel> models;
     DrawerLayout drawer;
     DatabaseReference databaseReference;
+    FirebaseAuth firebaseAuth;
     String uid;
     int index;
 
@@ -60,6 +62,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_navigation_main);
         notesDataBaseHandler=new NotesDataBaseHandler(this);
         models = notesDataBaseHandler.getAllNotes();
+        firebaseAuth=FirebaseAuth.getInstance();
         initView();
         List<NotesModel> data = new ArrayList<>();
 
@@ -166,6 +169,8 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
             case R.id.logoutbutton:
                 session.logout();
+                LoginManager.getInstance().logOut();
+                firebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(ToDoMainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
