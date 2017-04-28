@@ -342,6 +342,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(LoginActivity.this, "success...", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else
                     Toast.makeText(LoginActivity.this, "Authentication failed.",

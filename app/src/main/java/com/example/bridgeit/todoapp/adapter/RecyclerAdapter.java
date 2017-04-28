@@ -18,6 +18,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
     Context context;
     AppCompatTextView textViewtitle;
     AppCompatTextView textViewdesc;
+    AppCompatTextView textViewdate;
 
     List<NotesModel> model;
     CardView cardView;
@@ -43,6 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
     NotesModel notesModel=model.get(position);
         textViewtitle.setText(notesModel.getTitle());
         textViewdesc.setText(notesModel.getDescription());
+        textViewdate.setText(notesModel.getDate());
         // cardView.setOnClickListener(this);
 
     }
@@ -65,6 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
 
         public TaskHolder(View itemView) {
             super(itemView);
+            textViewdate = (AppCompatTextView) itemView.findViewById(R.id.datetextview);
             textViewtitle = (AppCompatTextView) itemView.findViewById(R.id.titletextview);
             textViewdesc = (AppCompatTextView) itemView.findViewById(R.id.descriptiontextview);
            // cardView = (CardView) itemView.findViewById(R.id.myCardView);

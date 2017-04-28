@@ -87,7 +87,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
                 datedisplay =datepickeredittext.getText().toString();
                 notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
                 notesModel = new NotesModel();
-                notesModel.setId(0);
+                notesModel.setDate(datepickeredittext.getText().toString());
                 notesModel.setTitle(titleedittext.getText().toString());
                 notesModel.setDescription(discriptionedittext.getText().toString());
                 notesDataBaseHandler.addNote(notesModel);
@@ -100,6 +100,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
                 new DatePickerDialog(toDoMainActivity, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                break;
         }
     }
 

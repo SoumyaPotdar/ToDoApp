@@ -99,6 +99,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 if (child != null && gestureDetector.onTouchEvent(e)) {
                     Bundle bund = new Bundle();
                     int position = rv.getChildAdapterPosition(child);
+                    bund.putString("date",models.get(position).getDate());
                     bund.putString("title", models.get(position).getTitle());
                     bund.putString("description", models.get(position).getDescription());
 
@@ -183,6 +184,10 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     public  void setBackData(NotesModel model){
         recyclerAdapter.addNote(model);
         recyclerView.setAdapter(recyclerAdapter);
+
+
+
+
         //Toast.makeText(this, ""+str, Toast.LENGTH_SHORT).show();
     }
     @Override
