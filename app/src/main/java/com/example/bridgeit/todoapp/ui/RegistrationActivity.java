@@ -42,7 +42,7 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         initView();
-        savebutton.setOnClickListener(this);
+
     }
 
     @Override
@@ -52,11 +52,10 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
         regmobilenoedittext = (AppCompatEditText) findViewById(R.id.mobilenoedittext);
         regpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordedittext);
         savebutton = (AppCompatButton) findViewById(R.id.registrationbutton);
+
         registrationPresenter = new RegistrationPresenter(this, this);
+        savebutton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
-
-
-
     }
 
     private boolean validate() {

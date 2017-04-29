@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.bridgeit.todoapp.R;
 
-/**
- * Created by bridgeit on 14/4/17.
- */
+
 public class NoteFragment extends Fragment {
     @Nullable
     @Override

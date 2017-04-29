@@ -17,6 +17,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.bridgeit.todoapp.BuildConfig;
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.UserModel;
@@ -27,8 +29,11 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.LoggingBehavior;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -86,11 +91,16 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        if (BuildConfig.DEBUG) {
+            FacebookSdk.setIsDebugEnabled(true);
+            FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+        }
         callbackManager = CallbackManager.Factory.create();
         initView();
         fbloginbutton = (LoginButton) findViewById(R.id.fbLogIn);
-        fbloginbutton.setReadPermissions("public_profile ","email");
+        fbloginbutton.setReadPermissions("public_profile email");
 
         userPref = this.getSharedPreferences(Constants.key_pref, MODE_PRIVATE);
         editor = userPref.edit();
@@ -117,6 +127,8 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                     public void onSuccess(LoginResult loginResult) {
                         Log.i(TAG, "onSuccess: ");
                         handleFacebook(loginResult.getAccessToken());
+
+
                         String accessToken = loginResult.getAccessToken().getToken();
                         Log.i("accesstoken", "access Token ");
                     }
@@ -140,22 +152,31 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+            public void onComplete(@NonNull final Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.i(TAG, "onSuccess: ");
+
                     GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             String emailid;
                             try {
                                 emailid = object.getString("email");
+                                editor.putString("whichuser","facebook");
                                 editor.putString(Constants.userRegister, "true");
                                 editor.putString(Constants.userEmail, emailid);
-                                editor.putString(Constants.profilePic,  object.getString("profile_Pic"));
+                                String id=object.getString("id");
+                                URL profile_pic = new URL(getString(R.string.fb_url_start) + id + getString(R.string.fb_url_last));
+                                editor.putString("uid", task.getResult().getUser().getUid());
+                                editor.putString(Constants.profilePic, String.valueOf(profile_pic));
                                 editor.putString(Constants.firstName, object.getString("first_name"));
                                 editor.putString(Constants.lastName, object.getString("last_name"));
                                 editor.commit();
+                                startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
+                                finish();
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -164,8 +185,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                     bundle.putString("fields", "id,first_name,last_name,email");
                     request.setParameters(bundle);
                     request.executeAsync();
-                    startActivity(new Intent(getApplicationContext(), ToDoMainActivity.class));
-                    finish();
+
                 } else {
                     Toast.makeText(LoginActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
 
@@ -179,7 +199,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     }
 
-    private Bundle getFacebookData(JSONObject object) {
+   /* private Bundle getFacebookData(JSONObject object) {
         try {
             Bundle bundle = new Bundle();
             String id = object.getString("Id");
@@ -204,7 +224,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
     @Override
     public void initView() {
@@ -278,7 +298,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     public void loginSuccess(UserModel model, String uid) {
         userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = userPref.edit();
+        editor.putString("whichuser","firebase");
         editor.putString("keyemail", model.getEmail());
+        editor.putString("keypassword", model.getPassword());
         editor.putString("keyname", model.getFullname());
         editor.putString("uid", uid);
         editor.commit();
@@ -341,6 +363,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+                    editor.putString("whichuser","google");
+                    editor.putString("uid", task.getResult().getUser().getUid());
+                    editor.commit();
                     Toast.makeText(LoginActivity.this, "success...", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
                     startActivity(intent);

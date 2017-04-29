@@ -1,7 +1,10 @@
 package com.example.bridgeit.todoapp.ui;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +14,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -24,18 +28,27 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.example.bridgeit.todoapp.R;
 import com.example.bridgeit.todoapp.adapter.RecyclerAdapter;
 import com.example.bridgeit.todoapp.baseclass.BaseActivity;
 import com.example.bridgeit.todoapp.model.NotesModel;
 import com.example.bridgeit.todoapp.sqlitedatabase.NotesDataBaseHandler;
+import com.example.bridgeit.todoapp.utils.Constants;
 import com.example.bridgeit.todoapp.utils.SessionManagement;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ToDoMainActivity extends BaseActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
@@ -48,23 +61,42 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     RecyclerAdapter recyclerAdapter;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
+    SharedPreferences userPref;
     Toolbar toolbar;
     List<NotesModel> models;
     DrawerLayout drawer;
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
     String uid;
+    FirebaseDatabase firebaseDatabase;
     int index;
+    AppCompatTextView navHeaderName, navHeaderEmail;
+   AppCompatImageView navHeaderImage;
+    String gFirstname,gEmail,gImageUrl;
+    String fbFirstname,fbLastname,fbEmail,fbImageUrl;
+    NavigationView navigationView;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
-        notesDataBaseHandler=new NotesDataBaseHandler(this);
-        models = notesDataBaseHandler.getAllNotes();
+       // notesDataBaseHandler=new NotesDataBaseHandler(this);
+        firebaseDatabase=FirebaseDatabase.getInstance();
+        userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        if(userPref.contains("uid")){
+            uid=userPref.getString("uid","null");
+        }
+        databaseReference=firebaseDatabase.getReference();
+        models=new ArrayList<>();
+        setBackData();
         firebaseAuth=FirebaseAuth.getInstance();
         initView();
-        List<NotesModel> data = new ArrayList<>();
+       // getGoogleData();
+
+
+
+
 
         setSupportActionBar(toolbar);
         //toolbar.setVisibility(View.GONE);
@@ -133,8 +165,31 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void initView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-      //  getdatatextview = (AppCompatTextView) findViewById(R.id.mytextView);
         userlogoutbutton = (AppCompatButton) findViewById(R.id.logoutbutton);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        navHeaderName=(AppCompatTextView)header.findViewById(R.id.nav_header_name);
+        navHeaderEmail =(AppCompatTextView)header.findViewById(R.id.nav_header_email);
+        navHeaderImage =(AppCompatImageView)header.findViewById(R.id.nav_header_imageview);
+
+
+        List<NotesModel> data = new ArrayList<>();
+
+
+
+        if(userPref.contains("whichuser")){
+            if(userPref.getString("whichuser","null").equals("facebook")){
+                getFBData();
+            }else if(userPref.getString("whichuser","null").equals("google"))
+            {}else if(userPref.getString("whichuser","null").equals("google"))
+            {
+
+                getGoogleplusData();
+            }else if(userPref.getString("whichuser","null").equals("firebase")){
+                getFirebaseData();
+            }
+
+        }
 
         session = new SessionManagement(this);
         fabupdate = (FloatingActionButton) findViewById(R.id.nav_fab);
@@ -181,15 +236,79 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 return super.onOptionsItemSelected(item);
         }
     }
-    public  void setBackData(NotesModel model){
-        recyclerAdapter.addNote(model);
-        recyclerView.setAdapter(recyclerAdapter);
 
-
-
-
-        //Toast.makeText(this, ""+str, Toast.LENGTH_SHORT).show();
+    public  void getGoogleplusData(){
+        gFirstname= userPref.getString("name", "value");
+        gEmail= userPref.getString("email", "value");
+        gImageUrl= userPref.getString("imageUrl", "value");
+        Glide.with(getApplicationContext()).load(gImageUrl).into(navHeaderImage);
+        setProfile();
     }
+
+    public void getFBData(){
+        gFirstname=userPref.getString(Constants.firstName,"value");
+        fbLastname=userPref.getString(Constants.lastName,"value");
+        gEmail=userPref.getString(Constants.userEmail,"value");
+        fbImageUrl=userPref.getString(Constants.profilePic,"value");
+        Glide.with(getApplicationContext()).load(fbImageUrl).into(navHeaderImage);
+        setProfile();
+    }
+
+    public void getFirebaseData(){
+        gEmail=userPref.getString("keyemail","value") ;
+        gFirstname=userPref.getString("keyname","value");
+        setProfile();
+    }
+
+    public  void  setProfile(){
+        navHeaderName.setText(gFirstname+ " " +fbLastname);
+        navHeaderEmail.setText(gEmail);
+    }
+
+    public  void setBackData(){
+        /*recyclerAdapter.addNote(model);
+        recyclerView.setAdapter(recyclerAdapter);
+*/
+        try {
+
+            databaseReference.child("userdata").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<ArrayList<NotesModel>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<NotesModel>>() {
+                    };final ArrayList<NotesModel> notesModelslist=new ArrayList<NotesModel>();
+
+                    for (DataSnapshot post : dataSnapshot.child(uid).getChildren()) {
+                        ArrayList<NotesModel> notesModelArrayList=new ArrayList<NotesModel>();
+                        notesModelArrayList.addAll( post.getValue(arrayListGenericTypeIndicator));
+                        notesModelslist.addAll(notesModelArrayList);
+                    }
+                    notesModelslist.removeAll(Collections.singleton(null));
+                    setNotesToRecycler(notesModelslist);
+
+                }
+
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }catch (Exception e){
+
+        }
+
+    }
+
+    private void setNotesToRecycler(ArrayList<NotesModel> notesModels) {
+        models=notesModels;
+        recyclerAdapter = new RecyclerAdapter(ToDoMainActivity.this, models);
+
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -274,7 +393,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                     notesDataBaseHandler.deleteNote(models.get(position));*/
                   databaseReference=FirebaseDatabase.getInstance().getReference();
 
-                    databaseReference.child("userdata").child(uid).child("fasdsda").child(String.valueOf(index)).removeValue();
+                    databaseReference.child("userdata").child(uid).child("userdata").child(String.valueOf(index)).removeValue();
                 } else {
 
                     int edit_position = position;

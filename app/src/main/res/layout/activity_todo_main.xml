@@ -41,6 +41,7 @@
                     android:layout_marginLeft="@dimen/margin"
                     android:text=""
                     android:textStyle="bold|italic" />
+
             <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/descriptiontextview"
                     android:layout_width="match_parent"

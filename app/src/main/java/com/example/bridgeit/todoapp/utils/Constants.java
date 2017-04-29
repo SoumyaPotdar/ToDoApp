@@ -13,10 +13,11 @@ public class Constants {
     public static String preferencekey="splashPreference";
     public static final String is_login = "isLogin";
     public static String userRegister;
-    public static String userEmail;
-    public static String profilePic;
-    public static String firstName;
-    public static String lastName;
+    public static String userEmail="fb_email";
+    public static String profilePic="fb_profile_pic";
+    public static String firstName="fb_first_name";
+    public static String lastName="fb_last_name";
     public static String facebookLogin;
     public static String profileURL;
+    public static final String FIREBASE_URL = "https://todoapp-bece4.firebaseio.com/";
 }

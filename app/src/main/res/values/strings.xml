@@ -31,5 +31,8 @@
     <string name="register_success">registered successfully</string>
     <string name="facebook_app_id">235628310176633</string>
     <string name="default_web_client_ids">1028491427204-63db9q91j96qre8v6au20prpa8j1f44g.apps.googleusercontent.com</string>
+    <string name="loading">Loading Data ...Please wait</string>
+    <string name="fb_url_start">http://graph.facebook.com/</string>
+    <string name="fb_url_last">/picture?type=square</string>
 
 </resources>

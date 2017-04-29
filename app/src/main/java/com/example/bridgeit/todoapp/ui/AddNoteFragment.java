@@ -62,7 +62,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_container, container, false);
+        View view = inflater.inflate(R.layout.fragment_todo_note, container, false);
 
         titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
         discriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
@@ -91,7 +91,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
                 notesModel.setTitle(titleedittext.getText().toString());
                 notesModel.setDescription(discriptionedittext.getText().toString());
                 notesDataBaseHandler.addNote(notesModel);
-                toDoMainActivity.setBackData(notesModel);
+              //  toDoMainActivity.setBackData(notesModel);
                 //String value=databaseReference.push().getKey();
                 getIndex(notesModel);
                 break;

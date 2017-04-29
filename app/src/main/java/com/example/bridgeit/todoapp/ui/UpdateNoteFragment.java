@@ -51,7 +51,7 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_container, container,false);
+        View view= inflater.inflate(R.layout.fragment_todo_note, container,false);
 
         dateedittext=(AppCompatEditText)view.findViewById(R.id.datetextview);
         titleedittext=(AppCompatEditText)view.findViewById(R.id.fragmenttitledittext);
@@ -73,7 +73,6 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
         {
             case R.id.savedatabutton:
                 notesModel=new NotesModel(dateedittext.getText().toString(),titleedittext.getText().toString(), discriptionedittext.getText().toString());
-
                 notesDataBaseHandler.updateNotes(notesModel);
                 toDoMainActivity.recyclerAdapter.addItem(notesModel,pos);
                toDoMainActivity.updateRecycler();
