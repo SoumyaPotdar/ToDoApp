@@ -238,7 +238,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         forgotpasswordtextview = (AppCompatTextView) findViewById(R.id.forgotpassTextview);
        createaccounttextview = (AppCompatTextView) findViewById(R.id.createaccounttextview);
         userloginbutton = (AppCompatButton) findViewById(R.id.loginbutton);
-
+        session=new SessionManagement(this);
       ///  googlesigninbutton.setOnClickListener(this);
         userloginbutton.setOnClickListener(this);
         forgotpasswordtextview.setOnClickListener(this);
@@ -296,7 +296,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     @Override
     public void loginSuccess(UserModel model, String uid) {
-        userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+      /*  userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = userPref.edit();
         editor.putString("whichuser","firebase");
         editor.putString("keyemail", model.getEmail());
@@ -304,6 +304,8 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         editor.putString("keyname", model.getFullname());
         editor.putString("uid", uid);
         editor.commit();
+*/
+        session.register(model);
 
         Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
         startActivity(intent);

@@ -46,9 +46,11 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoMainActivity extends BaseActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
@@ -68,7 +70,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
     String uid;
-    FirebaseDatabase firebaseDatabase;
+    DatabaseReference firebaseDatabase;
     int index;
     AppCompatTextView navHeaderName, navHeaderEmail;
    AppCompatImageView navHeaderImage;
@@ -82,22 +84,21 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
        // notesDataBaseHandler=new NotesDataBaseHandler(this);
-        firebaseDatabase=FirebaseDatabase.getInstance();
+        firebaseDatabase=FirebaseDatabase.getInstance().getReference();
         userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         if(userPref.contains("uid")){
             uid=userPref.getString("uid","null");
         }
+/*
         databaseReference=firebaseDatabase.getReference();
+*/
         models=new ArrayList<>();
         setBackData();
         firebaseAuth=FirebaseAuth.getInstance();
         initView();
        // getGoogleData();
 
-
-
-
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //toolbar.setVisibility(View.GONE);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,12 +137,9 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                     bund.putString("description", models.get(position).getDescription());
 
                   //  bund.putString("description", "dfsdfsdf");
-
                     UpdateNoteFragment fre = new UpdateNoteFragment(ToDoMainActivity.this, position);
                     fre.setArguments(bund);
-
                     Log.i("fghf", "onInterceptTouchEvent: ");
-
                     getFragmentManager().beginTransaction().replace(R.id.fragment, fre).addToBackStack(null).commit();
 
                 }
@@ -199,11 +197,13 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
         initSwipe();
     }
 
+    Menu menu;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -389,13 +389,15 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    /*recyclerAdapter.removeItem(position);
-                    notesDataBaseHandler.deleteNote(models.get(position));*/
-                  databaseReference=FirebaseDatabase.getInstance().getReference();
 
-                    databaseReference.child("userdata").child(uid).child("userdata").child(String.valueOf(index)).removeValue();
-                } else {
-
+                    notesModel=models.get(position);
+                    notesDataBaseHandler.deleteNote(notesModel);
+                    SimpleDateFormat dateFormat =new SimpleDateFormat("MMMM dd yy");
+                    String getdate = dateFormat.format(new Date().getTime());
+                    databaseReference.child("userdata").child(uid).child("date")
+                            .child(String.valueOf(notesModel.getId())).removeValue();
+                }
+                else {
                     int edit_position = position;
                 }
             }

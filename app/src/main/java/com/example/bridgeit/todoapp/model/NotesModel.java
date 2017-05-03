@@ -2,10 +2,12 @@ package com.example.bridgeit.todoapp.model;
 
 public class NotesModel
 {
-    String date;
+    String noteDate;
     String title;
     String description;
     int id;
+    String reminderDate;
+
 
 
     public NotesModel(int id, String title, String description)
@@ -20,7 +22,7 @@ public class NotesModel
     }
 
     public NotesModel(String date,String title, String description) {
-        this.date=date;
+        this.noteDate=date;
         this.title=title;
         this.description=description;
     }
@@ -34,11 +36,11 @@ public class NotesModel
     }
 
     public String getDate() {
-        return date;
+        return noteDate;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.noteDate = date;
     }
 
     public String getTitle() {

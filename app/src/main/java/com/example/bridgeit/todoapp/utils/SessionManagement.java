@@ -23,22 +23,8 @@ public class SessionManagement {
         userEditor.putString(Constants.keyemail, userModel.getEmail());
         userEditor.putString(Constants.keymobileno, userModel.getMobileNo());
         userEditor.putString(Constants.keypassword, userModel.getPassword());
-        userEditor.putBoolean(Constants.is_login, false);
+        userEditor.putBoolean(Constants.is_login, true);
         userEditor.commit();
-    }
-
-    public boolean login(String useremail,String userpassword)
-    {
-        boolean flag = userPref.getString(Constants.keyemail,"").equals(useremail) &&
-                userPref.getString(Constants.keypassword,"").equals(userpassword);
-
-        if(flag) {
-            userEditor.putBoolean(Constants.is_login, true);
-            userEditor.commit();
-            return true;
-        }else{
-            return false;
-        }
     }
 
     public boolean isLogin(){

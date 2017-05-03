@@ -2,11 +2,12 @@ package com.example.bridgeit.todoapp.model;
 
 public class UserModel {
 
-    private   String fullname;
-    private   String password;
-     private String mobileNo;
-    private String email;
-    private String id;
+     private  String fullname;
+     private  String password;
+     private  String mobileNo;
+     private  String email;
+     private  String id;
+
 
    /* public UserModel( String fullname, String password, String mobileNo, String email) {
         id=1;
