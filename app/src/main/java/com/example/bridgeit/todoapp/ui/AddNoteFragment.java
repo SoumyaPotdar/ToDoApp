@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddNoteFragment extends Fragment implements View.OnClickListener,DatePickerDialog.OnDateSetListener{
     AppCompatEditText titleedittext;
@@ -36,13 +38,14 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
     DatabaseReference databaseReference;
-    String datedisplay;
+    String currentDate;
 
     FirebaseAuth firebaseAuth;
     SharedPreferences userPref;
     DatePickerDialog datePickerDialog;
     private String uid;
     NotesModel notemod;
+    private String TAG="AddNoteFragment";
 
     public AddNoteFragment(ToDoMainActivity toDoMainActivity) {
         this.toDoMainActivity = toDoMainActivity;
@@ -66,7 +69,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
 
         titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
         discriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
-        datepickeredittext= (AppCompatEditText) view.findViewById(R.id.dateedittext);
+        datepickeredittext= (AppCompatEditText) view.findViewById(R.id.dateedittext1);
         savebutton = (AppCompatButton) view.findViewById(R.id.savedatabutton);
 
         savebutton.setOnClickListener(this);
@@ -75,7 +78,8 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
-        uid = userPref.getString("uid", "null");
+        uid = userPref.getString(Constants.keyUserId, "");
+
         return view;
     }
 
@@ -84,19 +88,24 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
         switch (v.getId()) {
             case R.id.savedatabutton:
 
-                datedisplay =datepickeredittext.getText().toString();
                 notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
                 notesModel = new NotesModel();
-                notesModel.setDate(datepickeredittext.getText().toString());
+
+                SimpleDateFormat format=new SimpleDateFormat("MMMM dd ,yyyy");
+                String currentDate=format.format(new Date().getTime());
+
+                notesModel.setNoteDate(currentDate);
                 notesModel.setTitle(titleedittext.getText().toString());
                 notesModel.setDescription(discriptionedittext.getText().toString());
+                notesModel.setReminderDate(datepickeredittext.getText().toString());
+                notesModel.setArchieve(notesModel.isArchieve());
                 notesDataBaseHandler.addNote(notesModel);
               //  toDoMainActivity.setBackData(notesModel);
                 //String value=databaseReference.push().getKey();
                 getIndex(notesModel);
                 break;
 
-            case R.id.dateedittext:
+            case R.id.dateedittext1:
                 new DatePickerDialog(toDoMainActivity, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -108,33 +117,39 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener,Da
     {
         notemod=notesMode;
         final boolean[] flag = {true};
+        try {
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if(notemod!=null) {
-                    if(snapshot.child("userdata").child(uid).child(datedisplay).exists()){
-                        int index = (int) snapshot.child("userdata").child(uid).child(datedisplay).getChildrenCount();
-                        putdata(index, notesMode);
-                        notemod = null;
-                    } else {
-                    putdata(0, notesMode);
-                    notemod = null;
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (notemod != null) {
+                        if (snapshot.child("userdata").child(uid).exists()) {
+                            int index = (int) snapshot.child("userdata").child(uid).child(notemod.getNoteDate()).getChildrenCount();
+                            putdata(index, notemod);
+                            notemod = null;
+                        } else {
+                            putdata(0, notemod);
+                            notemod = null;
+                        }
+                    }
                 }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+        catch (Exception e){
+            Log.i(TAG, "getIndex: "+e);
+        }
+
     }
 
     public void putdata(int index, NotesModel da)
     {
         da.setId(index);
+        databaseReference.child("userdata").child(uid).child(da.getNoteDate()).child(String.valueOf(index)).setValue(da);
         getActivity().getFragmentManager().popBackStackImmediate();
-        databaseReference.child("userdata").child(uid).child(datedisplay).child(String.valueOf(index)).setValue(da);
     }
 
     @Override

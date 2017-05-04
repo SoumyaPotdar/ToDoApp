@@ -41,9 +41,11 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
     NotesModel notesModel;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-
+    String currentDate;
     int pos;
-
+    private boolean archieve;
+    Calendar myCalendar ;
+    DatePickerDialog.OnDateSetListener date;
     public UpdateNoteFragment(ToDoMainActivity toDoMainActivity, int pos) {
         this.toDoMainActivity = toDoMainActivity;
         this.pos = pos;
@@ -68,7 +70,7 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
         savedInstanceState){
             View view = inflater.inflate(R.layout.fragment_todo_note, container, false);
 
-            dateedittext = (AppCompatEditText) view.findViewById(R.id.datetextview);
+            dateedittext = (AppCompatEditText) view.findViewById(R.id.dateedittext1);
             titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
             descriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
             savebutton = (AppCompatButton) view.findViewById(R.id.savedatabutton);
@@ -81,24 +83,31 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
 
             savebutton.setText("update");
             Bundle bundle = getArguments();
-            titleedittext.setText(bundle.getString("date"));
+
             titleedittext.setText(bundle.getString("title"));
             descriptionedittext.setText(bundle.getString("description"));
+            id=bundle.getInt("id");
+            archieve=bundle.getBoolean("archieve");
+            currentDate=bundle.getString("currentDate");
+            dateedittext.setText(bundle.getString("reminddate"));
             savebutton.setOnClickListener(this);
             dateedittext.setOnClickListener(this);
 
-            if(bundle!=null) {
-                title = titleedittext.getText().toString();
-                description = descriptionedittext.getText().toString();
-            }
 
-           if(bundle.containsKey("id"))
-               id=(bundle.getInt("id"));
-            titleedittext.setText(title);
-            descriptionedittext.setText(description);
-            SimpleDateFormat format=new SimpleDateFormat("MMMM dd ,yyyy");
-            String currentDate=format.format(new Date().getTime());
+            myCalendar = Calendar.getInstance();
+            date= new DatePickerDialog.OnDateSetListener() {
 
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+
+                    myCalendar.set(Calendar.YEAR, year);
+                    myCalendar.set(Calendar.MONTH, monthOfYear);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    updateLabel();
+                }
+
+            };
             return view;
         }
 
@@ -106,29 +115,24 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
         @Override
         public void onClick (View v){
             switch (v.getId()) {
-               /* database = new NoteDatabase(getActivity());
-                todoHomeDataModel = new TodoHomeDataModel();
-                todoHomeDataModel.setTitle(fragmentlistview_TitleEditText.getText().toString());
-                todoHomeDataModel.setDescription(fragmentlistview_DescriptionEditText.getText().toString());
-                todoHomeDataModel.setId(id);
-                database.updateItem(todoHomeDataModel);
-                mfirebasedatabase.child("note_details").child(uid).child(currentDate).child(String.valueOf(todoHomeDataModel.getId())).setValue(todoHomeDataModel);
-                getActivity().getFragmentManager().popBackStackImmediate*/
-
                 case R.id.savedatabutton:
-                    notesModel = new NotesModel(dateedittext.getText().toString(), titleedittext.getText().toString(), descriptionedittext.getText().toString());
+                    notesModel = new NotesModel();
+
+                    notesModel.setNoteDate(currentDate);
+                    notesModel.setTitle(dateedittext.getText().toString());
+                    notesModel.setDescription(descriptionedittext.getText().toString());
+                    notesModel.setReminderDate(dateedittext.getText().toString());
+                    notesModel.setId(id);
+                    notesModel.setArchieve(archieve);
+                    notesDataBaseHandler.updateNotes(notesModel);
                     toDoMainActivity.recyclerAdapter.addItem(notesModel, pos);
                     toDoMainActivity.updateRecycler();
 
-                    notesModel.setTitle(dateedittext.getText().toString());
-                    notesModel.setDescription(descriptionedittext.getText().toString());
-                    notesModel.setId(id);
-                    notesDataBaseHandler.updateNotes(notesModel);
-                    databaseReference.child("userdata").child(uid).child(String.valueOf(notesModel.getId())).setValue(notesModel);
+                    databaseReference.child("userdata").child(uid).child(currentDate).child(String.valueOf(notesModel.getId())).setValue(notesModel);
                     getActivity().getFragmentManager().popBackStackImmediate();
                     break;
 
-                case R.id.dateedittext:
+                case R.id.dateedittext1:
                     new DatePickerDialog(toDoMainActivity, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -136,21 +140,7 @@ public class UpdateNoteFragment extends Fragment implements View.OnClickListener
             }
         }
 
-        Calendar myCalendar = Calendar.getInstance();
 
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
-        };
 
 
     private void updateLabel() {

@@ -16,7 +16,6 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
@@ -30,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recyclerview"
+        android:layout_marginTop="59dp"
         >
     </android.support.v7.widget.RecyclerView>
 

@@ -20,4 +20,5 @@ public class Constants {
     public static String facebookLogin;
     public static String profileURL;
     public static final String FIREBASE_URL = "https://todoapp-bece4.firebaseio.com/";
+    public static final String keyUserId = "userUid";
 }

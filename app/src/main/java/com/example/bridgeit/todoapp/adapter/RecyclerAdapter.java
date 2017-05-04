@@ -44,7 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
     NotesModel notesModel=model.get(position);
         textViewtitle.setText(notesModel.getTitle());
         textViewdesc.setText(notesModel.getDescription());
-        textViewdate.setText(notesModel.getDate());
+        textViewdate.setText(notesModel.getNoteDate());
         // cardView.setOnClickListener(this);
 
     }

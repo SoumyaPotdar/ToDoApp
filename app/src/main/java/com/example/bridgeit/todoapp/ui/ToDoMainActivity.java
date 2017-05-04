@@ -70,7 +70,7 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
     String uid;
-    DatabaseReference firebaseDatabase;
+    FirebaseDatabase firebaseDatabase;
     int index;
     AppCompatTextView navHeaderName, navHeaderEmail;
    AppCompatImageView navHeaderImage;
@@ -78,20 +78,21 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
     String fbFirstname,fbLastname,fbEmail,fbImageUrl;
     NavigationView navigationView;
     ProgressDialog progressDialog;
+    SimpleDateFormat format;
+    String currentDate;
+    Bundle bund;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
        // notesDataBaseHandler=new NotesDataBaseHandler(this);
-        firebaseDatabase=FirebaseDatabase.getInstance().getReference();
+        firebaseDatabase=FirebaseDatabase.getInstance();
         userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
-        if(userPref.contains("uid")){
-            uid=userPref.getString("uid","null");
+        if(userPref.contains(Constants.keyUserId)){
+            uid=userPref.getString(Constants.keyUserId,"");
         }
-/*
         databaseReference=firebaseDatabase.getReference();
-*/
         models=new ArrayList<>();
         setBackData();
         firebaseAuth=FirebaseAuth.getInstance();
@@ -130,11 +131,17 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
                 View child = rv.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && gestureDetector.onTouchEvent(e)) {
-                    Bundle bund = new Bundle();
+                     bund = new Bundle();
                     int position = rv.getChildAdapterPosition(child);
-                    bund.putString("date",models.get(position).getDate());
+                    bund.putInt("id",models.get(position).getId());
+                    bund.putString("currentDate",models.get(position).getNoteDate());
                     bund.putString("title", models.get(position).getTitle());
                     bund.putString("description", models.get(position).getDescription());
+                    bund.putString("reminddate",models.get(position).getReminderDate());
+                    bund.putBoolean("archieve",models.get(position).isArchieve());
+/*
+                    bund.putString("Archieve",models.get(position),);
+*/
 
                   //  bund.putString("description", "dfsdfsdf");
                     UpdateNoteFragment fre = new UpdateNoteFragment(ToDoMainActivity.this, position);
@@ -169,6 +176,8 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
         navHeaderName=(AppCompatTextView)header.findViewById(R.id.nav_header_name);
         navHeaderEmail =(AppCompatTextView)header.findViewById(R.id.nav_header_email);
         navHeaderImage =(AppCompatImageView)header.findViewById(R.id.nav_header_imageview);
+        format=new SimpleDateFormat("MMMM dd,yyyy");
+        currentDate=format.format(new Date().getTime());
 
 
         List<NotesModel> data = new ArrayList<>();
@@ -275,11 +284,12 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     GenericTypeIndicator<ArrayList<NotesModel>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<NotesModel>>() {
-                    };final ArrayList<NotesModel> notesModelslist=new ArrayList<NotesModel>();
+                    };
+                    final ArrayList<NotesModel> notesModelslist=new ArrayList<NotesModel>();
 
                     for (DataSnapshot post : dataSnapshot.child(uid).getChildren()) {
-                        ArrayList<NotesModel> notesModelArrayList=new ArrayList<NotesModel>();
-                        notesModelArrayList.addAll( post.getValue(arrayListGenericTypeIndicator));
+                        ArrayList<NotesModel> notesModelArrayList=new ArrayList<>();
+                        notesModelArrayList.addAll(post.getValue(arrayListGenericTypeIndicator));
                         notesModelslist.addAll(notesModelArrayList);
                     }
                     notesModelslist.removeAll(Collections.singleton(null));
@@ -314,51 +324,15 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.nav_fab:
-                AddNoteFragment fa= new AddNoteFragment(this);
-                getFragmentManager().beginTransaction().replace(R.id.fragment,fa).addToBackStack(null).commit();
+                AddNoteFragment addNoteFragment= new AddNoteFragment(this);
+                getFragmentManager().beginTransaction().replace(R.id.fragment,addNoteFragment).addToBackStack(null).commit();
                 break;
-           /* case R.id.myCardView:
-                ResultActivity resultActivity=new ResultActivity();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment,resultActivity).commit();
-                String st=notesModel.getTitle();
-                NotesModel note=notesDataBaseHandler.getNotes(st);
-               // int itemPosition = recyclerAdapter.getAdapterPosition(v);
-                break;*/
+
             default:
                 break;
         }
-
-
-
-
     }
 
- /*   ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,  ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            //awesome code when user grabs recycler card to reorder
-        }
-
-        @Override
-        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            super.clearView(recyclerView, viewHolder);
-            //awesome code to run when user drops card and completes reorder
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            if (direction == ItemTouchHelper.RIGHT) {
-            }
-
-            if (direction == ItemTouchHelper.LEFT) {
-            }
-
-        }
-    };
-    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-    //itemTouchHelper.attachToRecyclerView(recycler);
-}
-*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -389,16 +363,19 @@ public class ToDoMainActivity extends BaseActivity implements View.OnClickListen
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-
+                    notesDataBaseHandler=new NotesDataBaseHandler(getApplicationContext());
                     notesModel=models.get(position);
                     notesDataBaseHandler.deleteNote(notesModel);
-                    SimpleDateFormat dateFormat =new SimpleDateFormat("MMMM dd yy");
+                    SimpleDateFormat dateFormat =new SimpleDateFormat("MMMM dd, yyyy");
                     String getdate = dateFormat.format(new Date().getTime());
-                    databaseReference.child("userdata").child(uid).child("date")
+                    databaseReference.child("userdata").child(uid).child(getdate)
                             .child(String.valueOf(notesModel.getId())).removeValue();
                 }
                 else {
-                    int edit_position = position;
+                    NotesModel notesModel =models.get(position);
+                    notesModel.setArchieve(true);
+                    databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
+                            .child(String.valueOf(notesModel.getId())).setValue(notesModel);
                 }
             }
         };

@@ -16,7 +16,7 @@
        />
 
    <android.support.v7.widget.AppCompatEditText
-       android:id="@+id/dateedittext"
+       android:id="@+id/dateedittext1"
        android:layout_height="wrap_content"
        android:layout_width="match_parent"
        android:layout_marginLeft="@dimen/margin"

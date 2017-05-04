@@ -19,8 +19,11 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     private  static  final String DATABASE_NAME="NotesManager";
     private static final String TABLE_NOTES="Notes";
     private static final String key_id="id";
+    private static final String key_currentdate="noteDate";
     private  static  String  key_title="title";
     private  static  final String key_description="description";
+    private  static  final String key_reminderdate="reminderDate";
+    private  static  final String key_archieve="archieve";
 
 
     public NotesDataBaseHandler(Context context) {
@@ -48,9 +51,12 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     public  void addNote(NotesModel notesModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(key_currentdate,notesModel.getNoteDate());
         values.put(key_id,notesModel.getId());
         values.put(key_title, notesModel.getTitle());
         values.put(key_description, notesModel.getDescription());
+        values.put(key_reminderdate,notesModel.getReminderDate());
+        values.put(key_archieve,notesModel.isArchieve());
 
         //inserting rows
         db.insert(TABLE_NOTES,null,values);
@@ -62,9 +68,12 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(key_id,model.getId());
+        /*values.put(key_id,model.getId());*/
+        values.put(key_currentdate,model.getNoteDate());
         values.put(key_title, model.getTitle());
         values.put(key_description, model.getDescription());
+        values.put(key_reminderdate,model.getReminderDate());
+        values.put(key_archieve,model.isArchieve());
 
         // updating row
        db.update(TABLE_NOTES, values, key_title + " = ?", new String[] { model.getTitle() });
@@ -97,8 +106,13 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         if (cursor.moveToFirst()) {
             do {
                 NotesModel notesModel = new NotesModel();
-                notesModel.setTitle(cursor.getString(0));
-                notesModel.setDescription(cursor.getString(1));
+                notesModel.setNoteDate(cursor.getString(0));
+                notesModel.setTitle(cursor.getString(1));
+                notesModel.setDescription(cursor.getString(2));
+                notesModel.setReminderDate(cursor.getString(3));
+/*
+                notesModel.setArchieve(cursor.getString(4));
+*/
                 // Adding contact to list
                 noteslist.add(notesModel);
             } while (cursor.moveToNext());

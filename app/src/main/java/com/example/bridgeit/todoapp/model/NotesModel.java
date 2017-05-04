@@ -2,11 +2,12 @@ package com.example.bridgeit.todoapp.model;
 
 public class NotesModel
 {
-    String noteDate;
+    int id;
     String title;
     String description;
-    int id;
+    String noteDate;
     String reminderDate;
+    boolean archieve;
 
 
 
@@ -21,10 +22,36 @@ public class NotesModel
 
     }
 
-    public NotesModel(String date,String title, String description) {
-        this.noteDate=date;
+    public NotesModel(String noteDate,String title, String description,String reminderDate,boolean archieve) {
+        this.noteDate=noteDate;
         this.title=title;
         this.description=description;
+        this.reminderDate=reminderDate;
+        this.archieve=archieve;
+    }
+
+    public String getNoteDate() {
+        return noteDate;
+    }
+
+    public void setNoteDate(String noteDate) {
+        this.noteDate = noteDate;
+    }
+
+    public String getReminderDate() {
+        return reminderDate;
+    }
+
+    public void setReminderDate(String reminderDate) {
+        this.reminderDate = reminderDate;
+    }
+
+    public boolean isArchieve() {
+        return archieve;
+    }
+
+    public void setArchieve(boolean archieve) {
+        this.archieve = archieve;
     }
 
     public int getId() {
@@ -33,14 +60,6 @@ public class NotesModel
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getDate() {
-        return noteDate;
-    }
-
-    public void setDate(String date) {
-        this.noteDate = date;
     }
 
     public String getTitle() {

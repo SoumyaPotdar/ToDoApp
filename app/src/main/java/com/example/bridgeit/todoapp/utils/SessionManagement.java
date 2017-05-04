@@ -18,11 +18,12 @@ public class SessionManagement {
         userEditor = userPref.edit();
     }
 
-    public void  register(UserModel userModel){
+    public void registerToSharedPreferenceAfterLogin(UserModel userModel){
         userEditor.putString(Constants.keyname, userModel.getFullname());
         userEditor.putString(Constants.keyemail, userModel.getEmail());
         userEditor.putString(Constants.keymobileno, userModel.getMobileNo());
         userEditor.putString(Constants.keypassword, userModel.getPassword());
+        userEditor.putString(Constants.keyUserId, userModel.getId());
         userEditor.putBoolean(Constants.is_login, true);
         userEditor.commit();
     }
