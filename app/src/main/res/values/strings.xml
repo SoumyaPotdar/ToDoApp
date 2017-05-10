@@ -34,5 +34,11 @@
     <string name="loading">Loading Data ...Please wait</string>
     <string name="fb_url_start">http://graph.facebook.com/</string>
     <string name="fb_url_last">/picture?type=square</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search</string>
+    <string name="note_Archieved">Note has been Archieved</string>
+    <string name="undo">UNDO</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="some_error">Something is wrong</string>
 
 </resources>

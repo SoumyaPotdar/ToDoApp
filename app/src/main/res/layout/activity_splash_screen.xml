@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:weightSum="1"
     android:background="@drawable/backgnd"
-    tools:context="com.example.bridgeit.todoapp.ui.SplashScreenActivity">
+    tools:context="com.app.todo.ui.SplashScreenActivity">
 >
 
     <android.support.v7.widget.AppCompatImageView

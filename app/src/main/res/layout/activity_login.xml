@@ -74,8 +74,10 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/signingoogle"
+        android:layout_marginTop="@dimen/margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
 </LinearLayout>
 </ScrollView>

@@ -2,15 +2,25 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/search"
+        android:title="@string/search_title"
+        android:icon="@drawable/searchh"
+        app:showAsAction="collapseActionView|always"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+
     <item
         android:id="@+id/changeview"
         android:title="@string/changeview"
         app:showAsAction="always"
-        android:icon="@android:drawable/btn_star_big_on"/>
+        android:icon="@drawable/ic_action_straggered"/>
+
 
     <item
         android:id="@+id/logoutbutton"
         android:title="@string/logout"
+        app:showAsAction="always"
+        android:icon="@drawable/logout"
         />
 
 </menu>

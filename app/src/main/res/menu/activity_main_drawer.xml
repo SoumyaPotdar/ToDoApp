@@ -10,20 +10,13 @@
             android:title="Reminders" />
     </group>
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_new_table"
-            android:title="Create new table" />
-    </group>
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_archieve"
             android:title="Archieve" />
 
-        <item
-            android:id="@+id/nav_delete"
-            android:title="Deleted" />
+
         </group>
 
     <group>
