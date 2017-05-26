@@ -47,6 +47,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         onCreate(db);
     }
 
+    
     // code to add the new notes
     public  void addNote(NotesModel notesModel) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -128,8 +129,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     public void deleteNote(NotesModel notesModel) {
         Log.i("abc", "deleteNote: ");
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NOTES, key_title + " = ?",
-                new String[] {notesModel.getTitle()});
+        db.delete(TABLE_NOTES, key_title + " = ?",new String[] {notesModel.getTitle()});
         db.close();
     }
    /* public int getContactsCount() {

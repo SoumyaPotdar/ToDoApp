@@ -1,45 +1,47 @@
 package com.app.todo.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
+import com.app.todo.todohome.ui.Fragment.UpdateNoteFragment;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.model.NotesModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder> implements View.OnClickListener {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder>  {
     Context context;
     List<NotesModel> notesModelList;
+    private Bundle bund;
 
     public RecyclerAdapter(Context context) {
         this.context = context;
         this.notesModelList = new ArrayList<>();
-        notifyDataSetChanged();
+        //this.notesModelList = notesModelList;
     }
 
     @Override
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.itemview_note, parent, false);
         TaskHolder viewHolder = new TaskHolder(view);
-        view.setOnClickListener(this);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(TaskHolder holder, int position) {
+    public void onBindViewHolder(TaskHolder holder,final int position) {
     NotesModel notesModel= notesModelList.get(position);
         holder.textViewtitle.setText(notesModel.getTitle());
         holder.textViewdesc.setText(notesModel.getDescription());
-        holder.textViewdate.setText(notesModel.getNoteDate());
-        // cardView.setOnClickListener(this);
-
+        holder.textViewdate.setText(notesModel.getReminderDate());
     }
 
     @Override
@@ -58,7 +60,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
         notesModelList.clear();
         notesModelList.addAll(newList);
         notifyDataSetChanged();
-
         Log.i("val ", "searchNotes: "+ notesModelList.get(notesModelList.size()-1).getTitle());
     }
 
@@ -78,24 +79,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
         notifyDataSetChanged();
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
-
     public class TaskHolder extends RecyclerView.ViewHolder {
-
         public AppCompatTextView textViewtitle;
         public AppCompatTextView textViewdesc;
         public AppCompatTextView textViewdate;
+        CardView cardView;
 
         public TaskHolder(View itemView) {
             super(itemView);
             textViewdate = (AppCompatTextView) itemView.findViewById(R.id.datetextview);
             textViewtitle = (AppCompatTextView) itemView.findViewById(R.id.titletextview);
             textViewdesc = (AppCompatTextView) itemView.findViewById(R.id.descriptiontextview);
-           // cardView = (CardView) itemView.findViewById(R.id.myCardView);
-            // Toast.makeText(this,""+textView.getText().toString(), Toast.LENGTH_SHORT).show();
+            cardView = (CardView) itemView.findViewById(R.id.myCardView);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bund = new Bundle();
+                    int position =getAdapterPosition();
+                    bund.putInt("id", notesModelList.get(position).getId());
+                    bund.putString("currentDate", notesModelList.get(position).getNoteDate());
+                    bund.putString("title", notesModelList.get(position).getTitle());
+                    bund.putString("description", notesModelList.get(position).getDescription());
+                    bund.putString("reminddate", notesModelList.get(position).getReminderDate());
+                    UpdateNoteFragment fre = new UpdateNoteFragment();
+                    fre.setArguments(bund);
+                    ((ToDoMainActivity)(context)).getFragmentManager().beginTransaction().replace(R.id.fragment,fre).addToBackStack(null).commit();
+                }
+            });
         }
     }
 
@@ -106,6 +116,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
     }
 
     public NotesModel getNoteModel(int pos){
+
         return notesModelList.get(pos);
     }
 

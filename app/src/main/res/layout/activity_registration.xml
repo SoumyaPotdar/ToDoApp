@@ -22,118 +22,73 @@
             android:layout_gravity="center"
             android:background="@drawable/register" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="@dimen/margintop"
-            android:orientation="horizontal"
-            android:weightSum="1">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/nametextview"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:inputType="text"
-                android:text="@string/full_name"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/fontsize"
-              />
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/nameedittext"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.6" />
-        </LinearLayout>
+            <android.support.design.widget.TextInputLayout
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="@dimen/margintop"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/emailtextview"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:text="@string/emai"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/fontsize"
-                />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/emailedittext"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.6"
-                android:inputType="textEmailAddress"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="@dimen/margintop"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/mobilenotextview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.6"
-                android:text="@string/mobile_no"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/fontsize" />
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/mobilenoedittext"
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/nameedittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:inputType="number"
-                />
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/emailedittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/mobilenoedittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Mobile No"
+                    android:maxLength="10"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/passwordedittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/registrationbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_button"
+                android:text="Save"
+                android:textAllCaps="false" />
+
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="@dimen/margintop"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/passwordtextview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.6"
-                android:text="@string/password"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/fontsize" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/passwordedittext"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:inputType="textPassword"
-                />
-        </LinearLayout>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/registrationbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/icon_lmargin"
-            android:layout_marginTop="@dimen/marg_top_25dp"
-            android:background="@drawable/rounded_button"
-            android:text="Save"
-            android:textAllCaps="false" />
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"/>
-    </LinearLayout>
 </ScrollView>

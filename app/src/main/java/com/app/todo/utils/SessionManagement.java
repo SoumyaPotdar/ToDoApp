@@ -29,7 +29,6 @@ public class SessionManagement {
         userEditor.putBoolean(Constants.is_login, true);
         userEditor.putBoolean(Constants.is_google_login, is_google_login);
         userEditor.putBoolean(Constants.is_fb_login, is_fb_login);
-
         userEditor.commit();
     }
 
@@ -60,10 +59,6 @@ public class SessionManagement {
         userEditor.putBoolean(Constants.is_google_login,false);
         userEditor.putBoolean(Constants.is_fb_login,false);
         userEditor.putBoolean(Constants.is_login,false);
-        userEditor.putBoolean(Constants.is_login,false);
         userEditor.commit();
-
-
     }
-
 }

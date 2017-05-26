@@ -4,10 +4,6 @@ import com.app.todo.model.NotesModel;
 
 import java.util.List;
 
-/**
- * Created by bridgeit on 9/5/17.
- */
-
 public interface TodoMainPresenterInterface {
 
     void getNoteList(String userId);

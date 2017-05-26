@@ -16,17 +16,13 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-/**
- * Created by bridgeit on 9/5/17.
- */
 
 public class TodoMainInteractor implements TodoMainInteractorInterface {
 
     Context context;
     TodoMainPresenterInterface presenter;
-
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
@@ -52,24 +48,26 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
                                     new GenericTypeIndicator<ArrayList<NotesModel>>() {
                                     };
 
-                            for (DataSnapshot obj :
-                                    dataSnapshot.child(userId).getChildren()) {
-                                List<NotesModel> li;
-                                li = obj.getValue(t);
+                            for (DataSnapshot obj : dataSnapshot.child(userId).getChildren()) {
+                                List<NotesModel> li = new ArrayList<>();
+                                li.addAll(obj.getValue(t));
                                 noteList.addAll(li);
                             }
+                            noteList.removeAll(Collections.singleton(null));
                             presenter.getNotesSuccess(noteList);
+                            presenter.hideDialog();
                          }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             presenter.getNotesFailure(context.getString(R.string.some_error));
+                            presenter.hideDialog();
                         }
                     }
             );
         }else {
             presenter.getNotesFailure(context.getString(R.string.no_internet));
+            presenter.hideDialog();
         }
-        presenter.hideDialog();
     }
 }

@@ -23,4 +23,10 @@ public class Constants {
     public static String is_google_login = "googleUser";
     public static String is_fb_login = "fbUser";
     public static String key_fb_email = "email";
+
+    public interface BundleKey {
+
+        String USER_PROFILE_LOCAL="userProfileLocal";
+        String USER_PROFILE_SERVER="userProfileServer";
+    }
 }

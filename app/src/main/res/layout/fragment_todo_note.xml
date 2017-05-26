@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#be948c"
+    android:background="#FFFFFF"
     android:layout_height="match_parent"
     android:clickable="true">
    <android.support.v7.widget.AppCompatTextView
@@ -16,23 +16,11 @@
        />
 
    <android.support.v7.widget.AppCompatEditText
-       android:id="@+id/dateEdittext"
-       android:layout_height="wrap_content"
-       android:layout_width="match_parent"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/margin"
-       android:hint="Reminder Date "
-       android:focusable="false">
-   </android.support.v7.widget.AppCompatEditText>
-
-
-   <android.support.v7.widget.AppCompatEditText
         android:id="@+id/fragmenttitledittext"
        android:layout_height="wrap_content"
         android:layout_width="match_parent"
        android:layout_marginLeft="@dimen/margin"
        android:layout_marginTop="@dimen/margin"
-       android:textColor="@color/colorpink"
        android:hint="Title ">
    </android.support.v7.widget.AppCompatEditText>
 
@@ -45,6 +33,15 @@
        android:hint="Discription ">
    </android.support.v7.widget.AppCompatEditText>
 
+   <android.support.v7.widget.AppCompatEditText
+       android:id="@+id/dateEdittext"
+       android:layout_height="wrap_content"
+       android:layout_width="match_parent"
+       android:layout_marginLeft="@dimen/margin"
+       android:layout_marginTop="@dimen/margin"
+       android:hint="Reminder Date "
+       android:focusable="false">
+   </android.support.v7.widget.AppCompatEditText>
 
    <android.support.v7.widget.AppCompatButton
        android:layout_width="wrap_content"
@@ -53,6 +50,7 @@
        android:background="@drawable/rounded_button"
        android:layout_marginLeft="@dimen/margin"
        android:layout_marginTop="@dimen/marg_top_25dp"
-       android:text="Save"/>
+       android:text="Save"
+       />
 
 </LinearLayout>

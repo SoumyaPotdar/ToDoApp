@@ -5,8 +5,7 @@ import android.content.Context;
 import com.app.todo.model.NotesModel;
 import com.app.todo.todohome.interactor.TodoMainInteractor;
 import com.app.todo.todohome.interactor.TodoMainInteractorInterface;
-import com.app.todo.todohome.ui.ToDoMainActivity;
-import com.app.todo.todohome.ui.TodoMainActivityInterface;
+import com.app.todo.todohome.ui.Activity.TodoMainActivityInterface;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ public class TodoMainPresenter implements TodoMainPresenterInterface {
 
     Context context;
     TodoMainActivityInterface viewInterface;
-
     TodoMainInteractorInterface interactor;
 
     public TodoMainPresenter(Context context, TodoMainActivityInterface viewInterface) {

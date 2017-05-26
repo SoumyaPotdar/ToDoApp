@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/abc" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_notes"
-            android:title="Notes" />
+            android:title="Notes"
+            android:icon="@drawable/archive_icon"/>
         <item
             android:id="@+id/nav_reminders"
-            android:title="Reminders" />
-    </group>
-
-
-    <group android:checkableBehavior="single">
+            android:title="Reminders"
+            android:icon="@drawable/calendar_reminder"/>
         <item
             android:id="@+id/nav_archieve"
-            android:title="Archieve" />
-
-
-        </group>
-
-    <group>
-    <item android:title="">
-
-            <item
-                android:id="@+id/nav_settings"
-                android:title="Settings" />
-            <item
-                android:id="@+id/nav_helpfeedback"
-                android:title="Help and feedback" />
-
-    </item>
+            android:title="Archive"
+            android:icon="@drawable/processing"/>
+        <item
+            android:id="@+id/nav_trash"
+            android:title="Trash"
+            android:icon="@drawable/trash"/>
     </group>
+
+
+    <group android:id="@+id/abcd" android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/logoutbutton"
+            android:title="@string/logout"
+            app:showAsAction="always"
+            android:icon="@drawable/logout"
+            />
+        <item
+            android:id="@+id/nav_about"
+            android:title="About Us"
+            android:icon="@drawable/avatar"/>
+        </group>
 </menu>
 

@@ -9,8 +9,6 @@ public class NotesModel
     String reminderDate;
     boolean archieve;
 
-
-
     public NotesModel(int id, String title, String description)
     {
         this.id=id;

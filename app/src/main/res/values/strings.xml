@@ -39,6 +39,10 @@
     <string name="note_Archieved">Note has been Archieved</string>
     <string name="undo">UNDO</string>
     <string name="no_internet">No internet connection</string>
-    <string name="some_error">Something is wrong</string>
+    <string name="some_error">Cancelled</string>
+    <string name="update">Update</string>
+    <string name="flag_true">true</string>
+    <string name="flag_false">false</string>
+    <string name="select_pick">select_picture</string>
 
 </resources>
