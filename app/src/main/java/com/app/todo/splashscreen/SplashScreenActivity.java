@@ -6,11 +6,13 @@ import android.os.Handler;
 
 import com.app.todo.login.ui.LoginActivity;
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.baseclass.BaseActivity;
 import com.app.todo.utils.Constants;
 import com.app.todo.utils.SessionManagement;
 import com.google.firebase.auth.FirebaseAuth;
+import io.fabric.sdk.android.Fabric;
 
 public class SplashScreenActivity extends BaseActivity {
 
@@ -19,6 +21,7 @@ public class SplashScreenActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
 
         firebaseAuth=FirebaseAuth.getInstance();

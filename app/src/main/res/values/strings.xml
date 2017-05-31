@@ -35,6 +35,8 @@
     <string name="fb_url_start">http://graph.facebook.com/</string>
     <string name="fb_url_last">/picture?type=square</string>
     <string name="search_title">Search</string>
+    <string name="add_title">Add note</string>
+    <string name="colorpicker">Pick color</string>
     <string name="search_hint">Search</string>
     <string name="note_Archieved">Note has been Archieved</string>
     <string name="undo">UNDO</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addnotefragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="#FFFFFF"
@@ -42,15 +43,5 @@
        android:hint="Reminder Date "
        android:focusable="false">
    </android.support.v7.widget.AppCompatEditText>
-
-   <android.support.v7.widget.AppCompatButton
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:id="@+id/savedatabutton"
-       android:background="@drawable/rounded_button"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/marg_top_25dp"
-       android:text="Save"
-       />
 
 </LinearLayout>

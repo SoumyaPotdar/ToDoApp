@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public interface TodoMainActivityInterface extends View.OnClickListener,
-        NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
+        NavigationView.OnNavigationItemSelectedListener {
 
     void getNotesSuccess(List<NotesModel> notesModelList);
     void getNotesFailure(String message);

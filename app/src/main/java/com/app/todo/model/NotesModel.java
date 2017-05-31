@@ -8,6 +8,7 @@ public class NotesModel
     String noteDate;
     String reminderDate;
     boolean archieve;
+    String color;
 
     public NotesModel(int id, String title, String description)
     {
@@ -20,12 +21,19 @@ public class NotesModel
 
     }
 
-    public NotesModel(String noteDate,String title, String description,String reminderDate,boolean archieve) {
+    public NotesModel(String noteDate,String title, String description,String reminderDate,boolean archieve,String color) {
         this.noteDate=noteDate;
         this.title=title;
         this.description=description;
         this.reminderDate=reminderDate;
         this.archieve=archieve;
+        this.color=color;
+    }
+
+    public String getColor() {return color;
+    }
+
+    public void setColor(String color) {this.color = color;
     }
 
     public String getNoteDate() {

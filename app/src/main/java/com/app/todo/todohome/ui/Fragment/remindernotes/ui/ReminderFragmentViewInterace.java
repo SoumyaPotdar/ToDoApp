@@ -1,12 +1,10 @@
-package com.app.todo.todohome.ui.Fragment.Remindernotes.presenter;
+package com.app.todo.todohome.ui.Fragment.remindernotes.ui;
 
 import com.app.todo.model.NotesModel;
 
 import java.util.List;
 
-public interface ReminderPresenterInterface {
-    void getReminderNoteList(String userId);
-
+public interface ReminderFragmentViewInterace {
     void getReminderNotesSuccess(List<NotesModel> notesModelList);
     void getNotesFailure(String message);
 

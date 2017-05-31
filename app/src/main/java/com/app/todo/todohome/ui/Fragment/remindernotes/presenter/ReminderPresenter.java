@@ -1,13 +1,11 @@
-package com.app.todo.todohome.ui.Fragment.Remindernotes.presenter;
+package com.app.todo.todohome.ui.Fragment.remindernotes.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.app.todo.model.NotesModel;
-import com.app.todo.todohome.ui.Fragment.Remindernotes.interactor.ReminderInteractor;
-import com.app.todo.todohome.ui.Fragment.Remindernotes.interactor.ReminderInteractorInterface;
-import com.app.todo.todohome.ui.Fragment.Remindernotes.ui.ReminderFragment;
-import com.app.todo.todohome.ui.Fragment.Remindernotes.ui.ReminderFragmentViewInterace;
+import com.app.todo.todohome.ui.Fragment.remindernotes.interactor.ReminderInteractor;
+import com.app.todo.todohome.ui.Fragment.remindernotes.interactor.ReminderInteractorInterface;
+import com.app.todo.todohome.ui.Fragment.remindernotes.ui.ReminderFragmentViewInterace;
 
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class ReminderPresenter implements ReminderPresenterInterface {
 
     @Override
     public void showDialog(String message) {
-        viewInterace.hideDialog();
+        viewInterace.showDialog(message);
     }
 
     @Override

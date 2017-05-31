@@ -4,15 +4,21 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
@@ -24,16 +30,17 @@ import com.app.todo.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jrummyapps.android.colorpicker.ColorPickerDialog;
+import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddNoteFragment extends Fragment implements AddNoteViewInterface, View.OnClickListener{
+public class AddNoteFragment extends Fragment implements AddNoteViewInterface, View.OnClickListener {
     AppCompatEditText titleedittext;
     AppCompatEditText discriptionedittext;
     AppCompatEditText datepickeredittext;
-    AppCompatButton savebutton;
     ToDoMainActivity toDoMainActivity;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
@@ -49,8 +56,8 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
     private String TAG="AddNoteFragment";
     private ProgressDialog progressDialog;
     AddNotePresenter presenter;
-
-
+    public int setColor;
+    LinearLayout addnotefragmentLayout;
 
 
     public AddNoteFragment(ToDoMainActivity toDoMainActivity) {
@@ -73,11 +80,11 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
 
         View view = inflater.inflate(R.layout.fragment_todo_note, container, false);
 
+        setHasOptionsMenu(true);
         titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
         discriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
         datepickeredittext= (AppCompatEditText) view.findViewById(R.id.dateEdittext);
-        savebutton = (AppCompatButton) view.findViewById(R.id.savedatabutton);
-        savebutton.setOnClickListener(this);
+        addnotefragmentLayout= (LinearLayout) view.findViewById(R.id.addnotefragment);
         datepickeredittext.setOnClickListener(this);
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -85,36 +92,12 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
         uid = userPref.getString(Constants.keyUserId, "");
         progressDialog=new ProgressDialog(getActivity());
         presenter=new AddNotePresenter(getActivity(),this);
-
         return view;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.savedatabutton:
-                presenter.showProgressDailog("Adding Note");
-                 reminderdate=discriptionedittext.getText().toString();
-                 isReminder=false;
-                notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
-                notesModel = new NotesModel();
-
-                SimpleDateFormat format=new SimpleDateFormat("MMMM dd,yyyy");
-                String currentDate=format.format(new Date().getTime());
-
-                notesModel.setNoteDate(currentDate);
-                notesModel.setTitle(titleedittext.getText().toString());
-                notesModel.setDescription(discriptionedittext.getText().toString());
-                notesModel.setReminderDate(datepickeredittext.getText().toString());
-                notesModel.setArchieve(notesModel.isArchieve());
-                notesDataBaseHandler.addNote(notesModel);
-              //  toDoMainActivity.setBackData(notesModel);
-                //String value=databaseReference.push().getKey();
-               presenter.getIndex(notesModel);
-                getFragmentManager().popBackStackImmediate();
-                presenter.hideProgressDailog();
-                break;
-
             case R.id.dateEdittext:
                 new DatePickerDialog(toDoMainActivity, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -122,7 +105,6 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
                 break;
         }
     }
-
 
     public void putdata(int index, NotesModel model)
     {
@@ -144,7 +126,6 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
         }
 
     };
-
 
     private void updateLabel() {
 
@@ -176,6 +157,55 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
     @Override
     public void hideProgressDailog() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.notes_utils,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.addnote:
+                presenter.showProgressDailog("Adding Note");
+                reminderdate=discriptionedittext.getText().toString();
+                isReminder=false;
+                notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
+                notesModel = new NotesModel();
+
+                SimpleDateFormat format=new SimpleDateFormat("MMMM dd,yyyy");
+                String currentDate=format.format(new Date().getTime());
+                notesModel.setNoteDate(currentDate);
+                notesModel.setTitle(titleedittext.getText().toString());
+                notesModel.setDescription(discriptionedittext.getText().toString());
+                notesModel.setReminderDate(datepickeredittext.getText().toString());
+                notesModel.setArchieve(notesModel.isArchieve());
+                notesModel.setColor(String.valueOf(setColor));
+                notesDataBaseHandler.addNote(notesModel);
+                //  toDoMainActivity.setBackData(notesModel);
+                //String value=databaseReference.push().getKey();
+                presenter.getIndex(notesModel);
+                getFragmentManager().popBackStackImmediate();
+                presenter.hideProgressDailog();
+                break;
+
+            case R.id.colorpicker:
+                ColorPickerDialog.newBuilder().setAllowPresets(true)
+                        .setColor(Color.BLACK).setDialogId(0)
+                        .setShowAlphaSlider(true)
+                        .show(getActivity());
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setBackgroundColor(int color) {
+        setColor=color;
+        addnotefragmentLayout.setBackgroundColor(color);
+
     }
 }
 

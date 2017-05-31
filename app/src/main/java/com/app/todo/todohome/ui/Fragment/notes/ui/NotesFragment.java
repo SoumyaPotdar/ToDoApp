@@ -1,7 +1,6 @@
-package com.app.todo.todohome.ui.Fragment;
+package com.app.todo.todohome.ui.Fragment.notes.ui;
 
 import android.app.Fragment;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,39 +20,39 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.app.todo.adapter.RecyclerAdapter;
 import com.app.todo.model.NotesModel;
 import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
-import com.app.todo.todohome.presenter.TodoMainPresenterInterface;
-import com.app.todo.todohome.ui.Activity.OnSearchTextChanged;
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteFragment;
+import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenter;
+import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenterInterface;
 import com.app.todo.utils.Constants;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class NotesFragment extends Fragment implements OnSearchTextChanged,View.OnClickListener {
-    TodoMainPresenterInterface presenter;
+public class NotesFragment extends Fragment implements NotesViewInterface, SearchView.OnQueryTextListener, View.OnClickListener {
+    private static final String TAG = "NotesFragment";
     List<NotesModel> models;
-    List<NotesModel> allNotes;
+    List<NotesModel> allNotes = new ArrayList<>();
     ToDoMainActivity toDoMainActivity;
     RecyclerView recyclerView;
-    private boolean isView=false;
-    private RecyclerAdapter recyclerAdapter;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
-    DatabaseReference databaseReference;
+    /*DatabaseReference databaseReference;*/
     String uid;
     FloatingActionButton addNoteFab;
-
-    private static final String TAG = "NotesFragment";
+    NotesPresenterInterface presenter;
+    List<NotesModel> searchList;
+    private boolean isView = false;
+    private RecyclerAdapter recyclerAdapter;
     private SharedPreferences userPref;
 
     public NotesFragment(ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes) {
@@ -66,17 +65,16 @@ public class NotesFragment extends Fragment implements OnSearchTextChanged,View.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         setHasOptionsMenu(true);
-        //   presenter.showDialog("Loading...");
         recyclerView = (RecyclerView) view.findViewById(R.id.notes_recyclerview);
+        presenter = new NotesPresenter(getActivity(), this);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        userPref=getActivity().getSharedPreferences(Constants.key_pref,Context.MODE_PRIVATE);
-        isView=userPref.getBoolean("isList",false);
+        userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        isView = userPref.getBoolean("isList", false);
         models = getWithoutArchive();
         checkLayout();
         addNoteFab = (FloatingActionButton) view.findViewById(R.id.nav_fab);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        recyclerAdapter = new RecyclerAdapter(getActivity().getBaseContext());
+        recyclerAdapter = new RecyclerAdapter(getActivity());
         recyclerAdapter.setNoteList(models);
         recyclerView.setAdapter(recyclerAdapter);
         initSwipe();
@@ -135,42 +133,24 @@ public class NotesFragment extends Fragment implements OnSearchTextChanged,View.
                     notesModel = models.get(position);
                     notesDataBaseHandler.deleteNote(notesModel);
                     recyclerAdapter.removeItem(position);
-                  /*  SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
-                    String getdate = dateFormat.format(new Date().getTime());*/
-                    databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                            .child(String.valueOf(notesModel.getId())).removeValue();
+
+                    presenter.deleteNote(notesModel);
+
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
                     notesModel = models.get(position);
                     notesModel.setArchieve(true);
-                    databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                            .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-
-                    /*Snackbar snackbar = Snackbar.make(getActivity().getCurrentFocus(), getString(R.string.note_Archieved), Snackbar.LENGTH_LONG)
-                            .setAction(R.string.undo, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    notesModel.setArchieve(false);
-                                    databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                                            .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-                                }
-                            });
-                    snackbar.setActionTextColor(Color.RED);
-                    View sbView = snackbar.getView();
-                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                    textView.setTextColor(Color.YELLOW);
-                    snackbar.show();*/
+                    presenter.archiveNote(notesModel);
                     Snackbar snackbar = Snackbar.make(getActivity().getCurrentFocus(), getString(R.string.note_Archieved), Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     notesModel.setArchieve(false);
-
                                     Log.i(TAG, "snackbar onClick: " + notesModel.getDescription() + "\n " + notesModel.getTitle());
 
-                                    databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                                            .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-//                                   models.add(position,notesModel);
+                                    presenter.undoNote(notesModel);
+
+                                    // models.add(position,notesModel);
                                     recyclerAdapter.setNoteList(models);
 
                                 }
@@ -186,39 +166,19 @@ public class NotesFragment extends Fragment implements OnSearchTextChanged,View.
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
-    
-    @Override
-    public void onSearchTextChange(String search) {
-        search = search.toLowerCase();
-        ArrayList<NotesModel> newList = new ArrayList<>();
-        for (NotesModel model : models) {
-            String name = model.getTitle().toLowerCase();
-            if (name.contains(search)) {
-                newList.add(model);
-            }
-        }
-        recyclerAdapter.searchNotes(newList);
-    }
 
     @Override
     public void onClick(View v) {
 
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         getActivity().getMenuInflater().inflate(R.menu.menu, menu);
-        //this.menu = menu;
-
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setIconifiedByDefault(false);
-        //   searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -226,23 +186,74 @@ public class NotesFragment extends Fragment implements OnSearchTextChanged,View.
         int id = item.getItemId();
         switch (id) {
             case R.id.changeview:
-                if (isView) {
+                if (!isView) {
                     recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
                     item.setIcon(R.drawable.ic_action_straggered);
                     SharedPreferences.Editor edit = userPref.edit();
-                    edit.putBoolean("isList",true);
+                    edit.putBoolean("isList", true);
                     edit.commit();
                     isView = true;
                 } else {
                     recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                     item.setIcon(R.drawable.ic_action_list);
                     SharedPreferences.Editor edit = userPref.edit();
-                    edit.putBoolean("isList",false);
+                    edit.putBoolean("isList", false);
                     edit.commit();
                     isView = false;
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String search) {
+        searchList = new ArrayList<>();
+        search = search.toLowerCase();
+        Log.e(TAG, "onQueryTextChange: " + models.size());
+        for (NotesModel model : models) {
+            String title = model.getTitle().toLowerCase();
+            if (title.contains(search)) {
+                searchList.add(model);
+            }
+        }
+        recyclerAdapter.setNoteList(searchList);
+        return true;
+    }
+
+    @Override
+    public void deleteNoteSuccess(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void deleteNoteFailure(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void archiveNoteSuccess(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void archiveNoteFailure(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void undoNoteSuccess(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void undoNoteFailure(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 }

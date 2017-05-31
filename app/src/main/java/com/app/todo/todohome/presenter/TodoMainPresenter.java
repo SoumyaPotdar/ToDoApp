@@ -9,10 +9,6 @@ import com.app.todo.todohome.ui.Activity.TodoMainActivityInterface;
 
 import java.util.List;
 
-/**
- * Created by bridgeit on 9/5/17.
- */
-
 public class TodoMainPresenter implements TodoMainPresenterInterface {
 
     Context context;

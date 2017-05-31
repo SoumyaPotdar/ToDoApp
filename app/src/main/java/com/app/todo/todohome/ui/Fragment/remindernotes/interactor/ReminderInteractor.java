@@ -1,10 +1,9 @@
-package com.app.todo.todohome.interactor;
+package com.app.todo.todohome.ui.Fragment.remindernotes.interactor;
 
 import android.content.Context;
 
 import com.app.todo.model.NotesModel;
-import com.app.todo.todohome.presenter.TodoMainPresenter;
-import com.app.todo.todohome.presenter.TodoMainPresenterInterface;
+import com.app.todo.todohome.ui.Fragment.remindernotes.presenter.ReminderPresenterInterface;
 import com.app.todo.utils.Connectivity;
 import com.app.todo.utils.Constants;
 import com.example.bridgeit.todoapp.R;
@@ -15,30 +14,30 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TodoMainInteractor implements TodoMainInteractorInterface {
 
+public class ReminderInteractor implements ReminderInteractorInterface {
     Context context;
-    TodoMainPresenterInterface presenter;
-    FirebaseDatabase firebaseDatabase;
+    ReminderPresenterInterface presenter;
     DatabaseReference databaseReference;
+    List<NotesModel> allNotes;
+    String currentDate;
+    Format format;
 
-    public TodoMainInteractor(Context context, TodoMainPresenterInterface presenter) {
-        this.context = context;
-        this.presenter = presenter;
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
+    public ReminderInteractor(Context context, ReminderPresenterInterface presenter) {
+    this.context=context;
+    this.presenter=presenter;
     }
 
     @Override
-    public void getNoteList(final String userId) {
-        presenter.showDialog(context.getString(R.string.loading));
-
+    public void getReminderNoteList(final String userId) {
+        presenter.showDialog("Fetching data");
         if (Connectivity.isNetworkConnected(context)){
+           databaseReference= FirebaseDatabase.getInstance().getReference();
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
                         @Override
@@ -49,15 +48,14 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
                                     };
 
                             for (DataSnapshot obj : dataSnapshot.child(userId).getChildren()) {
-                                List<NotesModel> li;
-                                li = obj.getValue(t);
-                               // list.add(child.getValue(Friends.class));
+                                List<NotesModel> li = new ArrayList<>();
+                                li.addAll(obj.getValue(t));
                                 noteList.addAll(li);
                             }
                             noteList.removeAll(Collections.singleton(null));
-                            presenter.getNotesSuccess(noteList);
+                            presenter.getReminderNotesSuccess(noteList);
                             presenter.hideDialog();
-                         }
+                        }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -70,5 +68,6 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
             presenter.getNotesFailure(context.getString(R.string.no_internet));
             presenter.hideDialog();
         }
+
     }
 }

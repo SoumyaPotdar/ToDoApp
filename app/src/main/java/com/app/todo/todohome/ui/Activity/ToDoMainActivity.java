@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -30,15 +31,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.app.todo.todohome.presenter.TodoMainPresenter;
 import com.app.todo.todohome.presenter.TodoMainPresenterInterface;
 import com.app.todo.todohome.ui.Fragment.AboutFragment;
 import com.app.todo.todohome.ui.Fragment.archivednotes.ui.ArchiveFragment;
-import com.app.todo.todohome.ui.Fragment.NotesFragment;
-import com.app.todo.todohome.ui.Fragment.Remindernotes.ui.ReminderFragment;
+import com.app.todo.todohome.ui.Fragment.notes.ui.NotesFragment;
+import com.app.todo.todohome.ui.Fragment.remindernotes.ui.ReminderFragment;
 import com.app.todo.todohome.ui.Fragment.TrashFragment;
+import com.app.todo.todohome.ui.Fragment.updatenotes.ui.UpdateNoteFragment;
 import com.app.todo.todohome.ui.downloadimage.DownloadImage;
 import com.app.todo.todohome.ui.downloadimage.DownloadImageInterface;
 import com.app.todo.todohome.ui.downloadimage.Utility;
@@ -56,6 +59,7 @@ import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -65,7 +69,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ToDoMainActivity extends BaseActivity implements TodoMainActivityInterface {
+public class ToDoMainActivity extends BaseActivity implements TodoMainActivityInterface,ColorPickerDialogListener {
     RecyclerView recyclerView;
     boolean isView = false;
     AppCompatButton userlogoutbutton;
@@ -79,7 +83,7 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     CircleImageView circleImageView;
     List<NotesModel> models, allNotes;
     Utility utility;
-    OnSearchTextChanged onSearchTextChanged;
+    boolean isNewNoteFragment=false;
     /*List<NotesModel>  listMotelDataAll,allNotes,mArchivedNotes,mReminderNotes;*/
 
     DrawerLayout drawer;
@@ -104,8 +108,12 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     private SharedPreferences.Editor editor;
     private int SELECT_PHOTO=3;
     private NotesFragment notesFragment;
+    private AddNoteFragment addNoteFragment;
+    private UpdateNoteFragment updateNoteFragment;
     private ArchiveFragment archiveFragment;
     private ReminderFragment reminderFragment;
+    private ToDoMainActivity toDoMainActivity;
+    private LinearLayout addnotelayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,6 +175,9 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         editor.putString(Constants.keyUserId,uid);
         editor.commit();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        addnotelayout= (LinearLayout)findViewById(R.id.addnotefragment);
+        updateNoteFragment=new UpdateNoteFragment();
+
         userlogoutbutton = (AppCompatButton) findViewById(R.id.logoutbutton);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
@@ -185,7 +196,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         editdataedittext = (AppCompatEditText) findViewById(R.id.fragmentdiscriptionedittext);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //toolbar.setVisibility(View.GONE);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -198,8 +208,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         checkLayout();
         recyclerAdapter = new RecyclerAdapter(this);
         recyclerView.setAdapter(recyclerAdapter);
-       /* initSwipe();*/
-
     }
 
     @Override
@@ -210,10 +218,8 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(this);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -221,127 +227,13 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         super.onResume();
         recyclerAdapter.notifyDataSetChanged();
     }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-
-            case R.id.search:
-                return true;
-
-            case R.id.changeview:
-               *//*
-                if (!isView) {
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-                    item.setIcon(R.drawable.ic_action_straggered);
-
-                    isView = true;
-                } else {
-
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                    item.setIcon(R.drawable.ic_action_list);
-                    isView = false;
-                }*//*
-
-                if (!isView) {
-
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-                    item.setIcon(R.drawable.ic_action_straggered);
-                    SharedPreferences.Editor edit = userPref.edit();
-                    edit.putBoolean("isList",true);
-                    edit.commit();
-                    isView = true;
-                } else {
-                    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                    item.setIcon(R.drawable.ic_action_list);
-
-                    SharedPreferences.Editor edit = userPref.edit();
-                    edit.putBoolean("isList",false);
-                    edit.commit();
-                    isView = false;
-                }
-
-                return true;
-
-
-
-               *//*session.logout();
-                LoginManager.getInstance().logOut();
-                firebaseAuth.getInstance().signOut();
-
-                Intent intent = new Intent(ToDoMainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                return true;*//*
-
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
-    /*public void getGoogleplusData() {
-        gFirstname = userPref.getString("name", "value");
-        gEmail = userPref.getString("email", "value");
-        gImageUrl = userPref.getString("imageUrl", "value");
-        Glide.with(getApplicationContext()).load(gImageUrl).into(navHeaderImage);
-        setProfile();
-    }
-
-    public void getFBData() {
-        gFirstname = userPref.getString(Constants.fb_firstName, "value");
-        fbLastname = userPref.getString(Constants.fb_lastName, "value");
-        gEmail = userPref.getString(Constants.userEmail, "value");
-        fbImageUrl = userPref.getString(Constants.profilePic, "value");
-        Glide.with(getApplicationContext()).load(fbImageUrl).into(navHeaderImage);
-        setProfile();
-    }*/
-
-
-   /* private void setNotesToRecycler(ArrayList<NotesModel> notesModels) {
-        allNotes = notesModel
-        models = getWithoutArchive();
-        recyclerAdapter = new RecyclerAdapter(this);
-        recyclerView.setAdapter(recyclerAdapter);
-        recyclerAdapter.notifyDataSetChanged();
-    }
-*/
-   /* private List<NotesModel> getWithoutArchive() {
-        ArrayList<NotesModel> notesModels = new ArrayList<>();
-        for (NotesModel note : allNotes) {
-            if (!note.isArchieve()) {
-                notesModels.add(note);
-            }
-        }
-        return notesModels;
-    }*/
-
-   /* private List<NotesModel> getArchiveNotes() {
-        ArrayList<NotesModel> notesModels = new ArrayList<>();
-        for (NotesModel note : allNotes) {
-            if (note.isArchieve()) {
-                notesModels.add(note);
-            }
-        }
-        return notesModels;
-    }*/
-
-    /*private List<NotesModel> getReminderNotes() {
-        ArrayList<NotesModel> notesModels = new ArrayList<>();
-        for (NotesModel note : allNotes) {
-            if (note.getReminderDate().equals(currentDate)&& !note.isArchieve()) {
-                notesModels.add(note);
-            }
-        }
-        return notesModels;
-    }
-*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nav_fab:
-                AddNoteFragment addNoteFragment = new AddNoteFragment(this);
+                isNewNoteFragment=true;
+                addNoteFragment = new AddNoteFragment(this);
                 getFragmentManager().beginTransaction().replace(R.id.fragment, addNoteFragment).addToBackStack(null).commit();
                 break;
 
@@ -383,7 +275,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
                         editor.putString(Constants.BundleKey.USER_PROFILE_LOCAL, String.valueOf(mPrfilefilePath));
                         editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_true));
                         editor.commit();
-
                     }
                 }
             }
@@ -414,61 +305,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     }
 
 
-
-    /* private void initSwipe() {
-         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-             @Override
-             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                 return false;
-             }
-
-             @Override
-             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
-             {
-                 int position = viewHolder.getAdapterPosition();
-
-                 if (direction == ItemTouchHelper.LEFT) {
-                     notesDataBaseHandler = new NotesDataBaseHandler(getApplicationContext());
-                     notesModel = models.get(position);
-                     notesDataBaseHandler.deleteNote(notesModel);
-                     recyclerAdapter.removeItem(position);
-                     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
-                     String getdate = dateFormat.format(new Date().getTime());
-                     databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                             .child(String.valueOf(notesModel.getId())).removeValue();
-                 }
-                 if (direction == ItemTouchHelper.RIGHT) {
-                     notesModel = models.get(position);
-                     notesModel.setArchieve(true);
-                     databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                             .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-
-                     Snackbar snackbar = Snackbar.make(getCurrentFocus(), getString(R.string.note_Archieved), Snackbar.LENGTH_LONG)
-                             .setAction(R.string.undo, new View.OnClickListener() {
-                                 @Override
-                                 public void onClick(View view) {
-                                     notesModel.setArchieve(false);
-                                     databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                                             .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-                                 }
-                             });
-                     snackbar.setActionTextColor(Color.RED);
-                     View sbView = snackbar.getView();
-                     TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                     textView.setTextColor(Color.YELLOW);
-                     snackbar.show();
-
-                 }
-             }
-
-
-         };
-         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-         itemTouchHelper.attachToRecyclerView(recyclerView);
-     }
-
-     */
     public void updateRecycler(NotesModel notesModel) {
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -479,46 +315,18 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
             case R.id.nav_notes:
                NotesFragment notesFragment=new NotesFragment(this,allNotes);
                 getFragmentManager().beginTransaction().replace(R.id.fragment,notesFragment).commit();
-
-
-               /* presenter.showDialog("Loading...");
-                models = getWithoutArchive();
-                checkLayout();
-                recyclerAdapter = new RecyclerAdapter(this);
-                recyclerView.setAdapter(recyclerAdapter);
-                recyclerAdapter.setNoteList(models);
-                presenter.hideDialog();
-                setTitle("Notes");
-                *//*recyclerAdapter.notifyDataSetChanged();*/
                 break;
 
             case R.id.nav_archieve:
                 ArchiveFragment archiveFragment=new ArchiveFragment(this, allNotes);
                 getFragmentManager().beginTransaction().replace(R.id.fragment,archiveFragment).commit();
-                /*presenter.showDialog("Loading...");
-                models = getArchiveNotes();
-                checkLayout();
-                recyclerAdapter = new RecyclerAdapter(this);
-                recyclerView.setAdapter(recyclerAdapter);
-                recyclerAdapter.setNoteList(models);
-                presenter.hideDialog();
-                setTitle("Archive");*/
-
                 break;
 
             case R.id.nav_reminders:
                 ReminderFragment reminderFragment=new ReminderFragment(this,allNotes);
                 getFragmentManager().beginTransaction().replace(R.id.fragment,reminderFragment).commit();
-               /* presenter.showDialog("Loading...");
-                models = getReminderNotes();
-                checkLayout();
-                recyclerAdapter = new RecyclerAdapter(this);
-                recyclerView.setAdapter(recyclerAdapter);
-                recyclerAdapter.setNoteList(models);
-                recyclerView.addOnItemTouchListener(null);
-                presenter.hideDialog();
-                setTitle("Reminder");*/
                 break;
+
             case R.id.nav_trash:
                 TrashFragment trashFragment= new TrashFragment(this,allNotes);
                 getFragmentManager().beginTransaction().replace(R.id.fragment,trashFragment).commit();
@@ -541,7 +349,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         }
         drawer.closeDrawers();
         return true;
-
     }
 
     private void checkLayout() {
@@ -552,29 +359,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
         }
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        /*newText = newText.toLowerCase();
-        Log.i("search", "onQueryTextChange: 1 " + newText);
-        ArrayList<NotesModel> newList = new ArrayList<>();
-        for (NotesModel model : models) {
-            String name = model.getTitle().toLowerCase();
-            if (name.contains(newText)) {
-                newList.add(model);
-                Log.i("search", "onQueryTextChange: 2 " + newText + "  " + model.getTitle().toLowerCase());
-            }
-        }
-        Log.i("search", "onQueryTextChange: 3 " + newList.size());
-        recyclerAdapter.searchNotes(newList);*/
-        onSearchTextChanged.onSearchTextChange(newText.trim());
-        return true;
     }
 
     @Override
@@ -678,5 +462,23 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
             outputFileUri = Uri.fromFile(new  File(getImage.getPath(), "pickImageResult.jpeg"));
         }
         return outputFileUri;
+    }
+
+    @Override
+    public void onColorSelected(int dialogId, @ColorInt int color) {
+        if (dialogId == 0) {
+            if(isNewNoteFragment){
+
+                addNoteFragment.setBackgroundColor(color);
+            }else {
+
+                updateNoteFragment.setBackgroundColor(color);
+            }
+        }
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
     }
 }

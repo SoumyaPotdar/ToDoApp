@@ -72,6 +72,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     CallbackManager callbackManager;
     GoogleSignInOptions googleSignInOptions;
     GoogleApiClient googleApiClient;
+
     String message;
     SignInButton signInButton;
     int RC_SIGN_IN = 999;
@@ -111,8 +112,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                     public void onSuccess(LoginResult loginResult) {
                         Log.i(TAG, "onSuccess: ");
                         handleFacebook(loginResult.getAccessToken());
-
-
                         String accessToken = loginResult.getAccessToken().getToken();
                         Log.i("accesstoken", "access Token ");
                     }
@@ -252,7 +251,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     @Override
     public void loginSuccess(UserModel model, String uid) {
-
         session.loginToSharedPref(model, isGoogleLogin, isFbLogin);
         Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
         startActivity(intent);
@@ -263,7 +261,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     public void loginFailure(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 
     ProgressDialog progressDialog;
 

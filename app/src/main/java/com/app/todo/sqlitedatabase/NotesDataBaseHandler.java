@@ -24,6 +24,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     private  static  final String key_description="description";
     private  static  final String key_reminderdate="reminderDate";
     private  static  final String key_archieve="archieve";
+    private  static  final String key_colorpick="colorpick";
 
 
     public NotesDataBaseHandler(Context context) {
@@ -58,6 +59,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         values.put(key_description, notesModel.getDescription());
         values.put(key_reminderdate,notesModel.getReminderDate());
         values.put(key_archieve,notesModel.isArchieve());
+        values.put(key_colorpick,notesModel.getColor());
 
         //inserting rows
         db.insert(TABLE_NOTES,null,values);
@@ -75,6 +77,8 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         values.put(key_description, model.getDescription());
         values.put(key_reminderdate,model.getReminderDate());
         values.put(key_archieve,model.isArchieve());
+        values.put(key_colorpick,model.getColor());
+
 
         // updating row
        db.update(TABLE_NOTES, values, key_title + " = ?", new String[] { model.getTitle() });
@@ -111,6 +115,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
                 notesModel.setTitle(cursor.getString(1));
                 notesModel.setDescription(cursor.getString(2));
                 notesModel.setReminderDate(cursor.getString(3));
+                notesModel.setColor(cursor.getString(4));
 /*
                 notesModel.setArchieve(cursor.getString(4));
 */
