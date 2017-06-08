@@ -27,7 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class NavigationActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class
+NavigationActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "NavigationActivity";
     Toolbar toolbar;
     FloatingActionButton fab;

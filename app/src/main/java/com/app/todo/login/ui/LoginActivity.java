@@ -59,7 +59,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     private String TAG = "LoginActivity";
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     AppCompatEditText useremailedittext, userpasswordedittext;
     AppCompatTextView forgotpasswordtextview, createaccounttextview;
     AppCompatButton userloginbutton;
@@ -70,7 +69,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     LoginPresenter presenter;
     SessionManagement session;
     CallbackManager callbackManager;
-    GoogleSignInOptions googleSignInOptions;
     GoogleApiClient googleApiClient;
 
     String message;
@@ -226,7 +224,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         switch (v.getId()) {
 
             case R.id.loginbutton:
-                presenter.showProgressDialog("Loading...");
                 useremail = useremailedittext.getText().toString();
                 user_password = userpasswordedittext.getText().toString();
                 if (validate()) {
@@ -251,6 +248,8 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     @Override
     public void loginSuccess(UserModel model, String uid) {
+        isFbLogin=false;
+        isGoogleLogin=false;
         session.loginToSharedPref(model, isGoogleLogin, isFbLogin);
         Intent intent = new Intent(LoginActivity.this, ToDoMainActivity.class);
         startActivity(intent);

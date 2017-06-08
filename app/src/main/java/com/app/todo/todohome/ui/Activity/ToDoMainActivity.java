@@ -1,7 +1,6 @@
 package com.app.todo.todohome.ui.Activity;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -34,27 +32,26 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.app.todo.adapter.RecyclerAdapter;
+import com.app.todo.baseclass.BaseActivity;
+import com.app.todo.login.ui.LoginActivity;
+import com.app.todo.model.NotesModel;
 import com.app.todo.todohome.presenter.TodoMainPresenter;
 import com.app.todo.todohome.presenter.TodoMainPresenterInterface;
 import com.app.todo.todohome.ui.Fragment.AboutFragment;
+import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteFragment;
 import com.app.todo.todohome.ui.Fragment.archivednotes.ui.ArchiveFragment;
 import com.app.todo.todohome.ui.Fragment.notes.ui.NotesFragment;
 import com.app.todo.todohome.ui.Fragment.remindernotes.ui.ReminderFragment;
-import com.app.todo.todohome.ui.Fragment.TrashFragment;
+import com.app.todo.todohome.ui.Fragment.trashnotes.ui.TrashFragment;
 import com.app.todo.todohome.ui.Fragment.updatenotes.ui.UpdateNoteFragment;
 import com.app.todo.todohome.ui.downloadimage.DownloadImage;
 import com.app.todo.todohome.ui.downloadimage.DownloadImageInterface;
 import com.app.todo.todohome.ui.downloadimage.Utility;
-import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteFragment;
-import com.app.todo.login.ui.LoginActivity;
 import com.app.todo.utils.Constants;
+import com.app.todo.utils.SessionManagement;
 import com.bumptech.glide.Glide;
 import com.example.bridgeit.todoapp.R;
-import com.app.todo.adapter.RecyclerAdapter;
-import com.app.todo.baseclass.BaseActivity;
-import com.app.todo.model.NotesModel;
-import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
-import com.app.todo.utils.SessionManagement;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -69,89 +66,75 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ToDoMainActivity extends BaseActivity implements TodoMainActivityInterface,ColorPickerDialogListener {
+public class ToDoMainActivity extends BaseActivity implements TodoMainActivityInterface, ColorPickerDialogListener {
+    public RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     boolean isView = false;
     AppCompatButton userlogoutbutton;
     SessionManagement session;
     FloatingActionButton addNoteFab;
     AppCompatEditText editdataedittext;
-    public RecyclerAdapter recyclerAdapter;
-    NotesDataBaseHandler notesDataBaseHandler;
-    SharedPreferences userPref;
     Toolbar toolbar;
     CircleImageView circleImageView;
-    List<NotesModel> models, allNotes;
+    List<NotesModel> notesModelList;
+    List<NotesModel> allNotes;
     Utility utility;
-    boolean isNewNoteFragment=false;
-    /*List<NotesModel>  listMotelDataAll,allNotes,mArchivedNotes,mReminderNotes;*/
-
+    boolean isNewNoteFragment = false;
+    Context mContext;
     DrawerLayout drawer;
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
     String uid;
-    FirebaseDatabase firebaseDatabase;
-    int index;
     AppCompatTextView navHeaderName, navHeaderEmail;
-    AppCompatImageView navHeaderImage;
-    String gFirstname, gEmail, gImageUrl;
-    String fbFirstname, fbLastname, fbEmail, fbImageUrl;
     NavigationView navigationView;
     SimpleDateFormat format;
     String currentDate;
     Bundle bund;
-    NotesModel notesModel;
     Menu menu;
-
     TodoMainPresenterInterface presenter;
+    TrashFragment trashFragment;
+    ProgressDialog progressDialog;
+    SharedPreferences userPref;
     private Uri mPrfilefilePath;
+    LinearLayout addnotelayout;
     private SharedPreferences.Editor editor;
-    private int SELECT_PHOTO=3;
+    private int SELECT_PHOTO = 3;
     private NotesFragment notesFragment;
     private AddNoteFragment addNoteFragment;
     private UpdateNoteFragment updateNoteFragment;
-    private ArchiveFragment archiveFragment;
-    private ReminderFragment reminderFragment;
-    private ToDoMainActivity toDoMainActivity;
-    private LinearLayout addnotelayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
-        notesFragment = new NotesFragment(this, allNotes);
-        getFragmentManager().beginTransaction().replace(R.id.fragment, notesFragment).commit();
-        // notesDataBaseHandler=new NotesDataBaseHandler(this);
+        setTitle("Notes");
 
-        /*getGoogleData();*/
         userPref = getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
-        editor=userPref.edit();
+        editor = userPref.edit();
         initView();
-        if(userPref.getBoolean("isList",false)){
-            isView = false;
-        }
-        else{
+        if (userPref.getBoolean("isList", false)) {
             isView = true;
+        } else {
+            isView = false;
         }
 
         presenter.getNoteList(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        models = recyclerAdapter.getAllDataList();
 
-        if (session.isFbLogin()){
+        if (session.isFbLogin()) {
             String profile = session.getUserDetails().getMobileNo();
             Glide.with(this).load(profile).into(circleImageView);
             navHeaderEmail.setText(session.getUserDetails().getEmail());
             navHeaderName.setText(session.getUserDetails().getFullname());
 
-        }else if (session.isGoogleLogin()){
+        } else if (session.isGoogleLogin()) {
             String profile = session.getUserDetails().getMobileNo();
             Glide.with(this).load(profile).into(circleImageView);
             navHeaderName.setText(session.getUserDetails().getFullname());
             navHeaderEmail.setText(session.getUserDetails().getEmail());
-        }else {
+        } else {
             navHeaderName.setText(session.getUserDetails().getFullname());
             navHeaderEmail.setText(session.getUserDetails().getEmail());
-            String email=navHeaderEmail.getText().toString();
+            String email = navHeaderEmail.getText().toString();
 
             if (userPref.contains(Constants.BundleKey.USER_PROFILE_SERVER) && userPref.getString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_false)).equals(getString(R.string.flag_true))) {
                 circleImageView.setOnClickListener(this);
@@ -171,13 +154,12 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     public void initView() {
 
         presenter = new TodoMainPresenter(this, this);
-        uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        editor.putString(Constants.keyUserId,uid);
+        notesModelList = new ArrayList<>();
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        editor.putString(Constants.keyUserId, uid);
         editor.commit();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        addnotelayout= (LinearLayout)findViewById(R.id.addnotefragment);
-        updateNoteFragment=new UpdateNoteFragment();
-
+        addnotelayout = (LinearLayout) findViewById(R.id.addnotefragment);
         userlogoutbutton = (AppCompatButton) findViewById(R.id.logoutbutton);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
@@ -185,9 +167,9 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         navHeaderEmail = (AppCompatTextView) header.findViewById(R.id.nav_header_email);
         format = new SimpleDateFormat("MMMM dd,yyyy");
         currentDate = format.format(new Date().getTime());
-        databaseReference=FirebaseDatabase.getInstance().getReference();
-        circleImageView= (CircleImageView) header.findViewById(R.id.nav_header_imageview);
-        utility=new Utility(this);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        circleImageView = (CircleImageView) header.findViewById(R.id.nav_header_imageview);
+        utility = new Utility(this);
         circleImageView.setOnClickListener(this);
         session = new SessionManagement(this);
 
@@ -214,10 +196,7 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         this.menu = menu;
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
         searchView.setIconifiedByDefault(false);
         return true;
     }
@@ -232,8 +211,8 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nav_fab:
-                isNewNoteFragment=true;
-                addNoteFragment = new AddNoteFragment(this);
+                isNewNoteFragment = true;
+                addNoteFragment = new AddNoteFragment(mContext, this);
                 getFragmentManager().beginTransaction().replace(R.id.fragment, addNoteFragment).addToBackStack(null).commit();
                 break;
 
@@ -242,17 +221,17 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
                 picker.setType("image/*");
                 picker.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(picker, String.valueOf(R.string.select_pick)), SELECT_PHOTO);
-              break;
+                break;
 
             default:
                 break;
         }
     }
 
-    public void showOrHideFab(boolean show){
-        if(show){
+    public void showOrHideFab(boolean show) {
+        if (show) {
             addNoteFab.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             addNoteFab.setVisibility(View.GONE);
         }
     }
@@ -265,7 +244,7 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
             String str = data.getStringExtra("getdisplaydata");
         }
 
-        if(requestCode==SELECT_PHOTO){
+        if (requestCode == SELECT_PHOTO) {
             {
                 // Get the url from data
                 if (data != null) {
@@ -286,8 +265,7 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
                 Bitmap cropedPic = extras.getParcelable("data");
                 Bitmap scaled = Bitmap.createScaledBitmap(cropedPic, 100, 100, true);
                 circleImageView.setImageBitmap(scaled);
-
-                utility.uploadFile(cropedPic,session.getUserDetails().getEmail());
+                utility.uploadFile(cropedPic, session.getUserDetails().getEmail());
             }
         }
     }
@@ -304,7 +282,6 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         startActivityForResult(cropIntent, 6);
     }
 
-
     public void updateRecycler(NotesModel notesModel) {
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -313,31 +290,30 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_notes:
-               NotesFragment notesFragment=new NotesFragment(this,allNotes);
-                getFragmentManager().beginTransaction().replace(R.id.fragment,notesFragment).commit();
+                NotesFragment notesFragment = new NotesFragment(this, this, allNotes);
+                getFragmentManager().beginTransaction().replace(R.id.fragment, notesFragment).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_archieve:
-                ArchiveFragment archiveFragment=new ArchiveFragment(this, allNotes);
-                getFragmentManager().beginTransaction().replace(R.id.fragment,archiveFragment).commit();
+                ArchiveFragment archiveFragment = new ArchiveFragment(mContext, this, allNotes);
+                getFragmentManager().beginTransaction().replace(R.id.fragment, archiveFragment).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_reminders:
-                ReminderFragment reminderFragment=new ReminderFragment(this,allNotes);
-                getFragmentManager().beginTransaction().replace(R.id.fragment,reminderFragment).commit();
+                ReminderFragment reminderFragment = new ReminderFragment(this, allNotes);
+                getFragmentManager().beginTransaction().replace(R.id.fragment, reminderFragment).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_trash:
-                TrashFragment trashFragment= new TrashFragment(this,allNotes);
-                getFragmentManager().beginTransaction().replace(R.id.fragment,trashFragment).commit();
-
+                trashFragment = new TrashFragment(mContext, this, allNotes);
+                getFragmentManager().beginTransaction().replace(R.id.fragment, trashFragment).addToBackStack(null).commit();
                 break;
+
             case R.id.nav_about:
-                getFragmentManager().beginTransaction().replace(R.id.fragment,new AboutFragment(this,allNotes)).commit();
-
+                getFragmentManager().beginTransaction().replace(R.id.fragment, new AboutFragment(this, allNotes)).addToBackStack(null).commit();
                 break;
-            case R.id.logoutbutton:
 
+            case R.id.logoutbutton:
                 session.logout();
                 LoginManager.getInstance().logOut();
                 firebaseAuth.getInstance().signOut();
@@ -354,33 +330,35 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
     private void checkLayout() {
         if (isView) {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
         } else {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-
         }
     }
 
     @Override
     public void getNotesSuccess(List<NotesModel> notesModelList) {
-            List<NotesModel> nonArchievedList = new ArrayList<>();
-            allNotes = notesModelList;
-            for (NotesModel model :
-                    notesModelList) {
-                if (!model.isArchieve())
-                    nonArchievedList.add(model);
+        List<NotesModel> nonArchievedList = new ArrayList<>();
+        allNotes = notesModelList;
+        for (NotesModel model :
+                notesModelList) {
+            if (!model.isArchieve())
+                nonArchievedList.add(model);
         }
-        if(getTitle().equals("Notes")) {
-             notesFragment = new NotesFragment(this, allNotes);
-            getFragmentManager().beginTransaction().replace(R.id.fragment, notesFragment).commit();
-        }else if(getTitle().equals("Archieve")){
-             archiveFragment=new ArchiveFragment(this, allNotes);
-            getFragmentManager().beginTransaction().replace(R.id.fragment,archiveFragment).commit();
-        }else  if(getTitle().equals("Reminder")){
-             reminderFragment=new ReminderFragment(this,allNotes);
-            getFragmentManager().beginTransaction().replace(R.id.fragment,reminderFragment).commit();
-        }else if(getTitle().equals("Trash")){
 
+        if(getTitle().equals("Notes")) {
+            notesFragment = new NotesFragment(this, this, allNotes);
+            getFragmentManager().beginTransaction().replace(R.id.fragment, notesFragment).addToBackStack(null).commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count=getFragmentManager().getBackStackEntryCount();
+        if(count==1){
+            super.onBackPressed();
+            finish();
+        }else {
+            getFragmentManager().popBackStack();
         }
     }
 
@@ -389,12 +367,10 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    ProgressDialog progressDialog;
-
     @Override
     public void showDialog(String message) {
         progressDialog = new ProgressDialog(this);
-        if(!isFinishing()) {
+        if (!isFinishing()) {
             progressDialog.setMessage(message);
             progressDialog.show();
         }
@@ -402,7 +378,7 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
 
     @Override
     public void hideDialog() {
-        if (!isFinishing() && progressDialog!= null){
+        if (!isFinishing() && progressDialog != null) {
             progressDialog.dismiss();
         }
     }
@@ -429,29 +405,26 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         }
 
 // collect all gallery intents
-        Intent galleryIntent = new  Intent(Intent.ACTION_GET_CONTENT);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
-        List<ResolveInfo> listGallery =  packageManager.queryIntentActivities(galleryIntent, 0);
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
         for (ResolveInfo res : listGallery) {
-            Intent intent = new  Intent(galleryIntent);
-            intent.setComponent(new  ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             intent.setPackage(res.activityInfo.packageName);
             allIntents.add(intent);
         }
 
-        Intent mainIntent =  allIntents.get(allIntents.size() - 1);
+        Intent mainIntent = allIntents.get(allIntents.size() - 1);
         for (Intent intent : allIntents) {
-            if  (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity"))  {
+            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
                 mainIntent = intent;
                 break;
             }
         }
         allIntents.remove(mainIntent);
-
-        Intent chooserIntent =  Intent.createChooser(mainIntent, "Select source");
-
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,  allIntents.toArray(new Parcelable[allIntents.size()]));
-
+        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
         return chooserIntent;
     }
 
@@ -459,26 +432,39 @@ public class ToDoMainActivity extends BaseActivity implements TodoMainActivityIn
         Uri outputFileUri = null;
         File getImage = getExternalCacheDir();
         if (getImage != null) {
-            outputFileUri = Uri.fromFile(new  File(getImage.getPath(), "pickImageResult.jpeg"));
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
         }
         return outputFileUri;
+    }
+
+    public void openUpdateFragment(NotesModel notesModel) {
+        isNewNoteFragment = false;
+        bund = new Bundle();
+        bund.putInt("id", notesModel.getId());
+        bund.putString("currentDate", notesModel.getNoteDate());
+        bund.putString("title", notesModel.getTitle());
+        bund.putString("description", notesModel.getDescription());
+        bund.putString("reminddate", notesModel.getReminderDate());
+        bund.putString("color", notesModel.getColor());
+        updateNoteFragment = new UpdateNoteFragment();
+        updateNoteFragment.setArguments(bund);
+        getFragmentManager().beginTransaction()
+                .add(R.id.fragment, updateNoteFragment, "updatefragment")
+                .addToBackStack(null).commit();
     }
 
     @Override
     public void onColorSelected(int dialogId, @ColorInt int color) {
         if (dialogId == 0) {
-            if(isNewNoteFragment){
-
+            if (isNewNoteFragment) {
                 addNoteFragment.setBackgroundColor(color);
-            }else {
-
-                updateNoteFragment.setBackgroundColor(color);
+            } else {
+                updateNoteFragment.setFragmentBackgroundColor(color);
             }
         }
     }
 
     @Override
     public void onDialogDismissed(int dialogId) {
-
     }
 }

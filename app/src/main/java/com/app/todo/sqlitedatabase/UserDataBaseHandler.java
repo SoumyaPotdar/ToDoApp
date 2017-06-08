@@ -77,21 +77,6 @@ public class UserDataBaseHandler extends SQLiteOpenHelper{
         Log.i("", "updateNotes: ");
     }
 
-
-
-    // code to get the single note
-   /*public NotesModel getNotes(String title) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NOTES, new String[]{key_id,key_title, key_description}, key_title = "?", new String[]{title}, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        NotesModel notesModel = new NotesModel(cursor.getString(0), cursor.getString(1),cursor.getString(2));
-        return notesModel;
-    }*/
-
-
-
-    // code to get all notes in a list view
     public List<UserModel> getAllNotes() {
         List<UserModel> userModelList= new ArrayList<UserModel>();
         // Select All Query
@@ -117,9 +102,6 @@ public class UserDataBaseHandler extends SQLiteOpenHelper{
         // return contact list
         return userModelList;
     }
-
-
-
 
     public void deleteNote(UserModel userModel) {
         Log.i("abc", "deleteNote: ");

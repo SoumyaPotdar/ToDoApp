@@ -1,47 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/addnotefragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#FFFFFF"
     android:layout_height="match_parent"
     android:clickable="true">
-   <android.support.v7.widget.AppCompatTextView
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/margin"
-       android:textColor="@color/colorPrimary"
-       android:textSize="@dimen/fontsize"
-       android:text="@string/addnotestv"
-       />
 
-   <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/fragmenttitledittext"
-       android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/margin"
-       android:hint="Title ">
-   </android.support.v7.widget.AppCompatEditText>
-
-   <android.support.v7.widget.AppCompatEditText
-       android:id="@+id/fragmentdiscriptionedittext"
-       android:layout_height="wrap_content"
+   <android.support.design.widget.TextInputLayout
        android:layout_width="match_parent"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/margin"
-       android:hint="Discription ">
-   </android.support.v7.widget.AppCompatEditText>
-
-   <android.support.v7.widget.AppCompatEditText
-       android:id="@+id/dateEdittext"
        android:layout_height="wrap_content"
+       android:layout_marginTop="59dp"
+       >
+
+      <android.support.v7.widget.AppCompatEditText
+          android:id="@+id/fragmenttitledittext"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:background="@android:color/transparent"
+          android:textStyle="bold"
+          android:layout_marginLeft="@dimen/margin"
+          android:layout_marginTop="@dimen/margin"
+          android:hint="Title">
+      </android.support.v7.widget.AppCompatEditText>
+
+   </android.support.design.widget.TextInputLayout>
+
+   <android.support.design.widget.TextInputLayout
+
        android:layout_width="match_parent"
-       android:layout_marginLeft="@dimen/margin"
-       android:layout_marginTop="@dimen/margin"
-       android:hint="Reminder Date "
-       android:focusable="false">
-   </android.support.v7.widget.AppCompatEditText>
+       android:layout_height="wrap_content"
+    >
+
+      <android.support.v7.widget.AppCompatEditText
+          android:id="@+id/fragmentdiscriptionedittext"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:background="@android:color/transparent"
+          android:layout_marginLeft="@dimen/margin"
+          android:layout_marginTop="@dimen/margin"
+         android:hint="Description">
+      </android.support.v7.widget.AppCompatEditText>
+
+   </android.support.design.widget.TextInputLayout>
+
+      <android.support.v7.widget.AppCompatTextView
+          android:id="@+id/datetextview"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:layout_marginLeft="@dimen/margin"
+          android:layout_marginTop="@dimen/margin"
+          android:hint="Reminder Date"
+          android:focusable="false">
+      </android.support.v7.widget.AppCompatTextView>
 
 </LinearLayout>

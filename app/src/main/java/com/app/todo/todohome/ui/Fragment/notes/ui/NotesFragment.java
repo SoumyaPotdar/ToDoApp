@@ -29,24 +29,31 @@ import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteFragment;
 import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenter;
 import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenterInterface;
+import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenter;
+import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenterInterface;
+import com.app.todo.todohome.ui.Fragment.trashnotes.ui.TrashFragment;
+import com.app.todo.todohome.ui.Fragment.trashnotes.ui.TrashFragmentViewInterface;
 import com.app.todo.utils.Constants;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class NotesFragment extends Fragment implements NotesViewInterface, SearchView.OnQueryTextListener, View.OnClickListener {
     private static final String TAG = "NotesFragment";
+    private  Context mContext;
     List<NotesModel> models;
     List<NotesModel> allNotes = new ArrayList<>();
     ToDoMainActivity toDoMainActivity;
     RecyclerView recyclerView;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
-    /*DatabaseReference databaseReference;*/
     String uid;
     FloatingActionButton addNoteFab;
     NotesPresenterInterface presenter;
@@ -54,10 +61,14 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
     private boolean isView = false;
     private RecyclerAdapter recyclerAdapter;
     private SharedPreferences userPref;
+    TrashFragment trashFragment;
+    private ArrayList<NotesModel> trashNoteList;
 
-    public NotesFragment(ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes) {
+
+    public NotesFragment(Context context,ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes) {
         this.toDoMainActivity = toDoMainActivity;
         this.allNotes = allNotes;
+        this.mContext=context;
     }
 
     @Nullable
@@ -66,15 +77,17 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         setHasOptionsMenu(true);
         recyclerView = (RecyclerView) view.findViewById(R.id.notes_recyclerview);
+        trashNoteList=new ArrayList<>();
         presenter = new NotesPresenter(getActivity(), this);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         isView = userPref.getBoolean("isList", false);
         models = getWithoutArchive();
         checkLayout();
         addNoteFab = (FloatingActionButton) view.findViewById(R.id.nav_fab);
 
-        recyclerAdapter = new RecyclerAdapter(getActivity());
+        recyclerAdapter = new RecyclerAdapter(getActivity(),this);
         recyclerAdapter.setNoteList(models);
         recyclerView.setAdapter(recyclerAdapter);
         initSwipe();
@@ -82,10 +95,10 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
         addNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddNoteFragment addNoteFragment = new AddNoteFragment((ToDoMainActivity) getActivity());
+                AddNoteFragment addNoteFragment = new AddNoteFragment(mContext,(ToDoMainActivity) getActivity());
                 getFragmentManager().beginTransaction().replace(R.id.fragment, addNoteFragment).addToBackStack(null).commit();
             }
-        });      //  presenter.hideDialog();
+        });
         return view;
     }
 
@@ -93,9 +106,10 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
         ArrayList<NotesModel> notesModels = new ArrayList<>();
         if (allNotes != null) {
             for (NotesModel note : allNotes) {
-                if (!note.isArchieve()) {
-                    notesModels.add(note);
-                }
+                if (!note.isArchieve()&&!note.isTrash()) {
+                        notesModels.add(note);
+                    }
+
             }
         }
         return notesModels;
@@ -103,10 +117,10 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     private void checkLayout() {
         if (isView) {
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
         } else {
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
     }
 
@@ -117,10 +131,11 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
     }
 
     public void initSwipe() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN|ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                recyclerAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
                 return false;
             }
 
@@ -130,15 +145,12 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
                 if (direction == ItemTouchHelper.LEFT) {
                     notesDataBaseHandler = new NotesDataBaseHandler(getApplicationContext());
-                    notesModel = models.get(position);
-                    notesDataBaseHandler.deleteNote(notesModel);
-                    recyclerAdapter.removeItem(position);
-
-                    presenter.deleteNote(notesModel);
-
+                    notesModel = recyclerAdapter.getNoteModel(position);
+                    notesModel.setTrash(true);
+                    presenter.moveToTrash(notesModel);
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
-                    notesModel = models.get(position);
+                    notesModel = recyclerAdapter.getNoteModel(position);
                     notesModel.setArchieve(true);
                     presenter.archiveNote(notesModel);
                     Snackbar snackbar = Snackbar.make(getActivity().getCurrentFocus(), getString(R.string.note_Archieved), Snackbar.LENGTH_LONG)
@@ -149,7 +161,6 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
                                     Log.i(TAG, "snackbar onClick: " + notesModel.getDescription() + "\n " + notesModel.getTitle());
 
                                     presenter.undoNote(notesModel);
-
                                     // models.add(position,notesModel);
                                     recyclerAdapter.setNoteList(models);
 
@@ -169,7 +180,6 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     @Override
     public void onClick(View v) {
-
     }
 
     @Override
@@ -206,7 +216,6 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -229,12 +238,12 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     @Override
     public void deleteNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void deleteNoteFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -244,16 +253,26 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     @Override
     public void archiveNoteFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void undoNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void undoNoteFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void moveToTrashSuccess(String message) {
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void moveToTrashFailure(String message) {
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 }

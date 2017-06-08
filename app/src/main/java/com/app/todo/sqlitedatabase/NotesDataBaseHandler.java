@@ -26,7 +26,6 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     private  static  final String key_archieve="archieve";
     private  static  final String key_colorpick="colorpick";
 
-
     public NotesDataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -35,7 +34,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES + "("+ key_id +" TEXT,"+ key_title+" TEXT,"+ key_description+" TEXT,"+ key_currentdate +" TEXT,"+ key_reminderdate+" TEXT,"+ key_archieve+" TEXT)";
+        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES + "("+ key_id +" TEXT,"+ key_title+" TEXT,"+ key_description+" TEXT,"+ key_currentdate +" TEXT,"+ key_reminderdate+" TEXT,"+ key_archieve+" TEXT,"+key_colorpick+" TEXT)";
         db.execSQL(CREATE_TABLE_NOTES);
     }
 
@@ -79,13 +78,10 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         values.put(key_archieve,model.isArchieve());
         values.put(key_colorpick,model.getColor());
 
-
         // updating row
        db.update(TABLE_NOTES, values, key_title + " = ?", new String[] { model.getTitle() });
         Log.i("", "updateNotes: ");
     }
-
-
 
     // code to get the single note
    /*public NotesModel getNotes(String title) {

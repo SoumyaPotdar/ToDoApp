@@ -1,5 +1,6 @@
 package com.app.todo.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
@@ -12,24 +13,34 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
+import com.app.todo.todohome.ui.Fragment.notes.ui.NotesFragment;
 import com.app.todo.todohome.ui.Fragment.updatenotes.ui.UpdateNoteFragment;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.model.NotesModel;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 public class
 RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder>  {
-    Context context;
     List<NotesModel> notesModelList;
-  //  List<NotesModel> model;
+    Context context;
+    NotesFragment notesFragment;
     private Bundle bund;
-    //ToDoMainActivity toDoMainActivity;
+    ToDoMainActivity toDoMainActivity;
 
     public RecyclerAdapter(Context context) {
         this.context = context;
         this.notesModelList = new ArrayList<>();
-       // this.model=model;
+    }
+
+    public RecyclerAdapter(Context context, NotesFragment notesFragment) {
+        this.context = context;
+        this.notesFragment=notesFragment;
+        this.notesModelList = new ArrayList<>();
+
     }
 
     @Override
@@ -46,6 +57,7 @@ RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder>  {
         holder.textViewdesc.setText(notesModel.getDescription());
         holder.textViewdate.setText(notesModel.getReminderDate());
         if (notesModel.getColor() != null) {
+
             holder.linearLayout.setBackgroundColor(Integer.parseInt(notesModel.getColor()));
         }
     }
@@ -91,30 +103,41 @@ RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder>  {
         public AppCompatTextView textViewdate;
         public LinearLayout linearLayout;
         CardView cardView;
+        UpdateNoteFragment updateNoteFragment;
 
-        public TaskHolder(View itemView) {
+        public TaskHolder(final View itemView) {
             super(itemView);
+
             textViewdate = (AppCompatTextView) itemView.findViewById(R.id.datetextview);
             textViewtitle = (AppCompatTextView) itemView.findViewById(R.id.titletextview);
             textViewdesc = (AppCompatTextView) itemView.findViewById(R.id.descriptiontextview);
             cardView = (CardView) itemView.findViewById(R.id.myCardView);
+            toDoMainActivity=new ToDoMainActivity();
             linearLayout= (LinearLayout) itemView.findViewById(R.id.cardviewlayout);
-            cardView.setOnClickListener(new View.OnClickListener() {
+
+            /*cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bund = new Bundle();
                     int position =getAdapterPosition();
+                    NotesModel notesModel=notesModelList.get(position);
                     bund.putInt("id", notesModelList.get(position).getId());
                     bund.putString("currentDate", notesModelList.get(position).getNoteDate());
                     bund.putString("title", notesModelList.get(position).getTitle());
                     bund.putString("description", notesModelList.get(position).getDescription());
                     bund.putString("reminddate", notesModelList.get(position).getReminderDate());
                     bund.putString("color",notesModelList.get(position).getColor());
-                    UpdateNoteFragment updateNoteFragment = new UpdateNoteFragment();
-                    updateNoteFragment.setArguments(bund);
-                    ((ToDoMainActivity)context).getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment,updateNoteFragment)
-                            .addToBackStack(null).commit();
+                    toDoMainActivity.openUpdateFragment(notesModel);
+
+                }
+            });*/
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(notesFragment!=null){
+
+                    ((ToDoMainActivity)context).openUpdateFragment(notesModelList.get(getAdapterPosition()));
+                }
                 }
             });
         }
@@ -127,7 +150,6 @@ RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHolder>  {
     }
 
     public NotesModel getNoteModel(int pos){
-
         return notesModelList.get(pos);
     }
 

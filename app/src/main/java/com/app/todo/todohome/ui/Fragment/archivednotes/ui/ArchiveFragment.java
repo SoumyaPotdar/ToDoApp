@@ -9,14 +9,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.app.todo.adapter.RecyclerAdapter;
 import com.app.todo.model.NotesModel;
+import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenter;
 import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenterInterface;
@@ -28,22 +33,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ArchiveFragment extends Fragment implements ArchieveFragmentInterface,SearchView.OnQueryTextListener{
     List<NotesModel> models, allNotes;
     RecyclerView recyclerView;
     ToDoMainActivity toDoMainActivity;
-    private boolean isView;
+    private boolean isView=false;
     private RecyclerAdapter recyclerAdapter;
     ArchivePresenterInterface presenter;
+    SharedPreferences userPref;
     private String userId;
+
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
+    Context context;
     private List<NotesModel> searchList;
+    private NotesDataBaseHandler notesDataBaseHandler;
+    private NotesModel notesModel;
 
-    public ArchiveFragment(ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes){
+    public ArchiveFragment(Context context,ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes){
         this.toDoMainActivity=toDoMainActivity;
         this.allNotes = allNotes;
+        this.context=context;
     }
 
     @Override
@@ -53,19 +65,23 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
         setHasOptionsMenu(true);
         recyclerView= (RecyclerView) view.findViewById(R.id.archive_recyclerview);
         progressDialog=new ProgressDialog(getActivity());
+        notesModel=new NotesModel();
         userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
         presenter=new ArchivePresenter(getActivity(),this);
 
+        userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        isView = userPref.getBoolean("isList", false);
         // fab.setEnabled(false);
         models = new ArrayList<>();
        // presenter.showDialog("Loading...");
-         presenter.getArchiveNoteList(userId);
+         presenter.getAllNotelist(userId);
         checkLayout();
         recyclerAdapter=new RecyclerAdapter(getActivity());
         recyclerAdapter.setNoteList(models);
         recyclerView.setAdapter(recyclerAdapter);
-       // presenter.hideDialog();
         getActivity().setTitle("Archive");
+
+        initSwipe();
         return view;
     }
 
@@ -76,14 +92,21 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
     }
 
    private void checkLayout() {
+       if (isView) {
+           recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
-        if (isView) {
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+       } else {
+           recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+       }
+    }
 
-        } else {
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-
-        }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -100,7 +123,7 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
     private List<NotesModel> getArchiveNotes() {
         ArrayList<NotesModel> notesModels = new ArrayList<>();
         for (NotesModel note : allNotes) {
-            if(note.isArchieve()) {
+            if(note.isArchieve()&&!note.isTrash()) {
                 notesModels.add(note);
             }
         }
@@ -121,7 +144,7 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
 
     @Override
     public void hideDialog() {
-        if (!getActivity().isFinishing() && progressDialog != null)
+        if ( progressDialog != null)
             progressDialog.dismiss();
     }
 
@@ -168,6 +191,52 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void initSwipe() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+
+                if (direction == ItemTouchHelper.LEFT) {
+                    notesDataBaseHandler = new NotesDataBaseHandler(getApplicationContext());
+                    notesModel = models.get(position);
+                    notesModel.setTrash(true);
+                    presenter.moveToTrash(notesModel);
+                    /*notesDataBaseHandler.deleteNote(notesModel);
+                    recyclerAdapter.removeItem(position);
+                    models.remove(position);
+                    presenter.deleteNote(position,notesModel);*/
+                }
+                if (direction == ItemTouchHelper.RIGHT) {
+                    notesModel = models.get(position);
+                    notesModel.setTrash(false);
+
+                    presenter.retriveNote(notesModel);
+                    recyclerAdapter.setNoteList(models);
+                }
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void moveToTrashSuccess(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void retriveNoteSuccess(String message) {
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 }
 

@@ -11,6 +11,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,7 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
     ProgressDialog progressDialog;
     String userId;
     String currentDate;
+    SharedPreferences userPref;
     Format format;
     private List<NotesModel> searchList;
 
@@ -68,6 +71,9 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
         //presenter.showDialog("Loading...");
         models = new ArrayList<>();
 
+        userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        isView = userPref.getBoolean("isList", false);
+
         presenter.getReminderNoteList(userId);
         checkLayout();
         recyclerAdapter=new RecyclerAdapter(getActivity());
@@ -85,12 +91,20 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
     }
     private void checkLayout() {
         if (isView) {
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        } else {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
+        } else {
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -108,7 +122,7 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
             if (note.getReminderDate().equals(currentDate)&& !note.isArchieve()) {
                 notesModels.add(note);
             }
-            recyclerAdapter=new RecyclerAdapter(getActivity().getBaseContext());
+           // recyclerAdapter=new RecyclerAdapter(getActivity().getBaseContext());
 
         }
         return notesModels;
@@ -129,9 +143,9 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
 
     @Override
     public void hideDialog() {
-        if(!getActivity().isFinishing()&&progressDialog!=null){
+        //if(!getActivity().isFinishing()&&progressDialog!=null) {
             progressDialog.dismiss();
-        }
+        //}
     }
 
     @Override

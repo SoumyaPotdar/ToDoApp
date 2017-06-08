@@ -9,5 +9,9 @@ public interface ArchieveFragmentInterface {
 
     void showDialog(String message);
     void hideDialog();
+
+    void moveToTrashSuccess(String message);
+
+    void retriveNoteSuccess(String message);
 }
 

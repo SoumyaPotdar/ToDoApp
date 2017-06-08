@@ -1,12 +1,9 @@
-package com.app.todo.todohome.ui.Fragment.archivednotes.interactor;
+package com.app.todo.todohome.ui.Fragment.trashnotes.interactor;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.app.todo.adapter.RecyclerAdapter;
 import com.app.todo.model.NotesModel;
-import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenter;
-import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenterInterface;
+import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenter;
 import com.app.todo.utils.Connectivity;
 import com.app.todo.utils.Constants;
 import com.example.bridgeit.todoapp.R;
@@ -22,25 +19,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ArchiveFragmentInteractor implements ArchiveInteractorInterface{
-
-    ArrayList<NotesModel> allNotes=new ArrayList<>();
-    RecyclerAdapter recyclerAdapter;
-    ArchivePresenterInterface presenter;
+public class TrashInteractor implements TrashInteractorInterface{
     Context context;
-    String uid;
+    TrashPresenter trashPresenter;
     private DatabaseReference databaseReference;
+    String uid;
 
-    public ArchiveFragmentInteractor(Context context, ArchivePresenter presenter) {
+    public TrashInteractor(Context context, TrashPresenter trashPresenter) {
         this.context=context;
-        this.presenter=presenter;
-        databaseReference= FirebaseDatabase.getInstance().getReference();
-        uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        this.trashPresenter=trashPresenter;
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @Override
     public void getAllNotelist(final String userId) {
-        presenter.showDialog("Fetching data");
+        trashPresenter.showDialog("Fetching data");
         if (Connectivity.isNetworkConnected(context)){
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
@@ -57,36 +52,35 @@ public class ArchiveFragmentInteractor implements ArchiveInteractorInterface{
                                 noteList.addAll(li);
                             }
                             noteList.removeAll(Collections.singleton(null));
-                            presenter.getNotesSuccess(noteList);
-                            presenter.hideDialog();
+                            trashPresenter.getNotesSuccess(noteList);
+                            trashPresenter.hideDialog();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            presenter.getNotesFailure(context.getString(R.string.some_error));
-                            presenter.hideDialog();
+                            trashPresenter.getNotesFailure(context.getString(R.string.some_error));
+                            trashPresenter.hideDialog();
                         }
                     }
             );
         }else {
-            presenter.getNotesFailure(context.getString(R.string.no_internet));
-            presenter.hideDialog();
+            trashPresenter.getNotesFailure(context.getString(R.string.no_internet));
+            trashPresenter.hideDialog();
         }
-
-
-        }
+    }
 
     @Override
-    public void moveToTrash(NotesModel notesModel) {
+    public void deleteNote(int position, NotesModel notesModel) {
         databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                .child(String.valueOf(notesModel.getId())).setValue(notesModel);
-        presenter.moveToTrashSuccess("Note moved to trash");
+                .child(String.valueOf(notesModel.getId())).removeValue();
+        trashPresenter.deleteNoteSuccess("Note deleted");
+
     }
 
     @Override
     public void retriveNote(NotesModel notesModel) {
         databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
-                .child(String.valueOf(notesModel.getId())).child("archieve").setValue(false);
-        presenter.retriveNoteSuccess("Note retrived");
+                .child(String.valueOf(notesModel.getId())).child("trash").setValue(false);
+        trashPresenter.retriveNoteSuccess("Note retrived");
     }
 }

@@ -23,22 +23,19 @@ public class LoginInteractor implements LoginInteractorInterface{
     Context context;
     LoginPresenterInterface loginPresenter;
     DatabaseReference databaseReference;
-    UserModel usermodel;
-    FirebaseAuth mAuth;
-    SharedPreferences userPref;
+    FirebaseAuth firebaseAuth;
 
     public LoginInteractor(Context context, LoginPresenterInterface loginPresenter) {
         this.context = context;
         this.loginPresenter = loginPresenter;
-
+        firebaseAuth =FirebaseAuth.getInstance();
         databaseReference= FirebaseDatabase.getInstance().getReference();
     }
 
     public void requestForLogin(String email, String password)
     {
         loginPresenter.showProgressDialog("Please Wait...");
-        mAuth=FirebaseAuth.getInstance();
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -52,14 +49,13 @@ public class LoginInteractor implements LoginInteractorInterface{
         });
     }
 
-    public  void getUserloginData(final String uid) {
+    public void getUserloginData(final String uid) {
 
         databaseReference.child("users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
              UserModel model= snapshot.getValue(UserModel.class);
                 loginPresenter.loginSuccess(model,uid);
-
             }
 
             @Override

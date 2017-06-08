@@ -1,13 +1,10 @@
 package com.app.todo.todohome.ui.Fragment.archivednotes.presenter;
 
-import android.app.Activity;
 import android.content.Context;
-
 import com.app.todo.model.NotesModel;
 import com.app.todo.todohome.ui.Fragment.archivednotes.interactor.ArchiveFragmentInteractor;
 import com.app.todo.todohome.ui.Fragment.archivednotes.interactor.ArchiveInteractorInterface;
 import com.app.todo.todohome.ui.Fragment.archivednotes.ui.ArchieveFragmentInterface;
-import com.app.todo.todohome.ui.Fragment.archivednotes.ui.ArchiveFragment;
 
 import java.util.List;
 
@@ -24,8 +21,8 @@ public class ArchivePresenter implements ArchivePresenterInterface {
     }
 
     @Override
-    public void getArchiveNoteList(String userId) {
-        interactor.getArchiveNoteList(userId);
+    public void getAllNotelist(String userId) {
+        interactor.getAllNotelist(userId);
     }
 
     @Override
@@ -46,5 +43,25 @@ public class ArchivePresenter implements ArchivePresenterInterface {
     @Override
     public void hideDialog() {
         viewInterface.hideDialog();
+    }
+
+    @Override
+    public void moveToTrash(NotesModel notesModel) {
+        interactor.moveToTrash(notesModel);
+    }
+
+    @Override
+    public void moveToTrashSuccess(String message) {
+        viewInterface.moveToTrashSuccess(message);
+    }
+
+    @Override
+    public void retriveNote(NotesModel notesModel) {
+        interactor.retriveNote(notesModel);
+    }
+
+    @Override
+    public void retriveNoteSuccess(String message) {
+        viewInterface.retriveNoteSuccess(message);
     }
 }

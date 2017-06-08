@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.app.todo.login.ui.LoginActivity;
+import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.baseclass.BaseActivity;
 import com.app.todo.registration.presenter.RegistrationPresenter;
@@ -24,17 +25,10 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
     AppCompatEditText regemailedittext;
     AppCompatEditText regmobilenoedittext;
     AppCompatEditText regpasswordedittext;
-    DatabaseReference mDatabase;
     String name, email, mobileno, password;
     AppCompatButton savebutton;
     RegistrationPresenter registrationPresenter;
-    String userId;
-    SharedPreferences userPref;
     ProgressDialog progressDialog;
-    SessionManagement session;
-    boolean validateresult;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +48,21 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
         registrationPresenter = new RegistrationPresenter(getBaseContext(), this);
         savebutton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.registrationbutton:
+                if (validate()) {
+                    name = regnameedittext.getText().toString();
+                    mobileno = regmobilenoedittext.getText().toString();
+                    email = regemailedittext.getText().toString();
+                    password = regpasswordedittext.getText().toString();
+                    registrationPresenter.requestForRegister(name, email, mobileno, password);
+                }
+                break;
+        }
     }
 
     private boolean validate() {
@@ -107,46 +116,10 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
         return flag;
     }
 
-   /* private void updateUser() {
-        if (!TextUtils.isEmpty(userId)) {
-            mDatabase.child("users").child(userId).child("name").setValue(name);
-            mDatabase.child("users").child(userId).child("email").setValue(email);
-            mDatabase.child("users").child(userId).child("mobileno").setValue(mobileno);
-            mDatabase.child("users").child(userId).child("password").setValue(password);
-        }
-    }*/
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.registrationbutton:
-                if (validate()) {
-                    name = regnameedittext.getText().toString();
-                    mobileno = regmobilenoedittext.getText().toString();
-                    email = regemailedittext.getText().toString();
-                    password = regpasswordedittext.getText().toString();
-                    registrationPresenter.requestForRegister(name, email, mobileno, password);
-                } else {
-
-                }
-                break;
-
-        }
-    }
-
-
     @Override
     public void registrationSuccess(String message) {
-        /*userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, MODE_PRIVATE);
-        userPref = getApplicationContext().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = userPref.edit();
-        editor.putString("keyname", model.getFullname());
-        editor.putString("keyemail", model.getEmail());
-        editor.putString("keymobileno", model.getMobileNo());
-        editor.putString("keypassword", model.getPassword());
-        editor.commit();
-*/
-        startActivity(new Intent(this, LoginActivity.class));
+
+        startActivity(new Intent(this, ToDoMainActivity.class));
         finish();
     }
 

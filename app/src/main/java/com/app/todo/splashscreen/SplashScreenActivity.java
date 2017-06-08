@@ -24,7 +24,6 @@ public class SplashScreenActivity extends BaseActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
 
-        firebaseAuth=FirebaseAuth.getInstance();
         session = new SessionManagement(this);
 
         boolean validate = session.isLogin();

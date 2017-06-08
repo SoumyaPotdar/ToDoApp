@@ -20,6 +20,14 @@ public class NotesPresenter implements NotesPresenterInterface {
         interactor=new NotesInteractor(context,this);
     }
 
+/*
+
+    @Override
+    public void moveToTrash(int position, NotesModel notesModel) {
+        interactor.moveToTrash(position,notesModel);
+    }
+*/
+
     @Override
     public void deleteNote(NotesModel notesModel) {
         interactor.deleteNote(notesModel);
@@ -36,22 +44,31 @@ public class NotesPresenter implements NotesPresenterInterface {
     }
 
     @Override
+    public void moveToTrashSuccess(String message) {
+        noteView.moveToTrashSuccess(message);
+    }
+
+
+    @Override
     public void deleteNoteSuccess(String message) {
         noteView.deleteNoteSuccess(message);
     }
 
     @Override
     public void deleteNoteFailure(String message) {
+
         noteView.deleteNoteFailure(message);
     }
 
     @Override
-    public void archiveNoteSuccess(String message) {
+    public void archiveNoteSuccess(String message)
+    {
         noteView.archiveNoteSuccess(message);
     }
 
     @Override
-    public void archiveNoteFailure(String message) {
+    public void archiveNoteFailure(String message)
+    {
         noteView.deleteNoteFailure(message);
     }
 
@@ -61,7 +78,18 @@ public class NotesPresenter implements NotesPresenterInterface {
     }
 
     @Override
-    public void undoNoteFailure(String message) {
+    public void undoNoteFailure(String message)
+    {
         noteView.undoNoteFailure(message);
+    }
+
+    @Override
+    public void putdata(int index, NotesModel notesModel) {
+        interactor.putdata(index,notesModel);
+    }
+
+    @Override
+    public void moveToTrash(NotesModel notesModel) {
+        interactor.moveToTrash(notesModel);
     }
 }

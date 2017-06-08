@@ -51,6 +51,7 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
                             for (DataSnapshot obj : dataSnapshot.child(userId).getChildren()) {
                                 List<NotesModel> li;
                                 li = obj.getValue(t);
+
                                // list.add(child.getValue(Friends.class));
                                 noteList.addAll(li);
                             }

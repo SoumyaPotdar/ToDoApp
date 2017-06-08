@@ -1,4 +1,5 @@
 package com.app.todo.todohome.ui.Fragment.addnotes.ui;
+
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -6,11 +7,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,26 +19,27 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
-import com.app.todo.todohome.ui.Fragment.addnotes.presenter.AddNotePresenter;
-import com.example.bridgeit.todoapp.R;
 import com.app.todo.model.NotesModel;
 import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
+import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
+import com.app.todo.todohome.ui.Fragment.addnotes.presenter.AddNotePresenter;
 import com.app.todo.utils.Constants;
+import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
-import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class AddNoteFragment extends Fragment implements AddNoteViewInterface, View.OnClickListener {
+    public int setColor;
     AppCompatEditText titleedittext;
     AppCompatEditText discriptionedittext;
-    AppCompatEditText datepickeredittext;
+    AppCompatTextView datepickertextview;
+    Context context;
     ToDoMainActivity toDoMainActivity;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
@@ -49,18 +48,32 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
     boolean isReminder;
     String reminderdate;
     FirebaseAuth firebaseAuth;
-    SharedPreferences userPref;
     DatePickerDialog datePickerDialog;
-    private String uid;
+    SharedPreferences userPref;
     NotesModel notemod;
-    private String TAG="AddNoteFragment";
-    private ProgressDialog progressDialog;
+
     AddNotePresenter presenter;
-    public int setColor;
     LinearLayout addnotefragmentLayout;
+    Calendar myCalendar = Calendar.getInstance();
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
 
-    public AddNoteFragment(ToDoMainActivity toDoMainActivity) {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+
+    };
+    private String uid;
+    private String TAG = "AddNoteFragment";
+    private ProgressDialog progressDialog;
+
+    public AddNoteFragment(Context context, ToDoMainActivity toDoMainActivity) {
+        this.context = context;
         this.toDoMainActivity = toDoMainActivity;
     }
 
@@ -81,69 +94,50 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
         View view = inflater.inflate(R.layout.fragment_todo_note, container, false);
 
         setHasOptionsMenu(true);
+        initView(view);
+        return view;
+    }
+
+    public void initView(View view) {
         titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
         discriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
-        datepickeredittext= (AppCompatEditText) view.findViewById(R.id.dateEdittext);
-        addnotefragmentLayout= (LinearLayout) view.findViewById(R.id.addnotefragment);
-        datepickeredittext.setOnClickListener(this);
+        datepickertextview = (AppCompatTextView) view.findViewById(R.id.datetextview);
+        addnotefragmentLayout = (LinearLayout) view.findViewById(R.id.addnotefragment);
+
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         uid = userPref.getString(Constants.keyUserId, "");
-        progressDialog=new ProgressDialog(getActivity());
-        presenter=new AddNotePresenter(getActivity(),this);
-        return view;
+        progressDialog = new ProgressDialog(getActivity());
+        presenter = new AddNotePresenter(getActivity(), this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dateEdittext:
-                new DatePickerDialog(toDoMainActivity, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
-        }
-    }
-
-    public void putdata(int index, NotesModel model)
-    {
 
     }
 
-    Calendar myCalendar = Calendar.getInstance();
+    public void putdata(int index, NotesModel model) {
 
-    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-
-    };
+    }
 
     private void updateLabel() {
 
         String myFormat = "MMMM dd,yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
-        datepickeredittext.setText(sdf.format(myCalendar.getTime()));
+        datepickertextview.setText(sdf.format(myCalendar.getTime()));
     }
 
     @Override
     public void addNoteSuccess(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(toDoMainActivity, message, Toast.LENGTH_SHORT).show();
+      //  getFragmentManager().popBackStackImmediate();
     }
 
     @Override
     public void addNoteFailure(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(toDoMainActivity, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -162,50 +156,65 @@ public class AddNoteFragment extends Fragment implements AddNoteViewInterface, V
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.notes_utils,menu);
+        inflater.inflate(R.menu.notes_utils, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.addnote:
-                presenter.showProgressDailog("Adding Note");
-                reminderdate=discriptionedittext.getText().toString();
-                isReminder=false;
+                showProgressDailog("Adding Note");
+                reminderdate = discriptionedittext.getText().toString();
+                isReminder = false;
                 notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
                 notesModel = new NotesModel();
 
-                SimpleDateFormat format=new SimpleDateFormat("MMMM dd,yyyy");
-                String currentDate=format.format(new Date().getTime());
+                SimpleDateFormat format = new SimpleDateFormat("MMMM dd,yyyy");
+                String currentDate = format.format(new Date().getTime());
                 notesModel.setNoteDate(currentDate);
                 notesModel.setTitle(titleedittext.getText().toString());
                 notesModel.setDescription(discriptionedittext.getText().toString());
-                notesModel.setReminderDate(datepickeredittext.getText().toString());
+                notesModel.setReminderDate(datepickertextview.getText().toString());
                 notesModel.setArchieve(notesModel.isArchieve());
                 notesModel.setColor(String.valueOf(setColor));
                 notesDataBaseHandler.addNote(notesModel);
                 //  toDoMainActivity.setBackData(notesModel);
                 //String value=databaseReference.push().getKey();
                 presenter.getIndex(notesModel);
-                getFragmentManager().popBackStackImmediate();
-                presenter.hideProgressDailog();
+             //
+                //   getFragmentManager().popBackStackImmediate();
+                hideProgressDailog();
                 break;
 
             case R.id.colorpicker:
+               /* ColorPickerDialog.newBuilder().setAllowPresets(true)
+                        .setColor(Color.YELLOW).setDialogId(0)
+                        .setAllowCustom(false)
+                        .setShowColorShades(false)
+                        .show(getActivity());
+                break;*/
                 ColorPickerDialog.newBuilder().setAllowPresets(true)
-                        .setColor(Color.BLACK).setDialogId(0)
+                        .setColor(Color.WHITE).setDialogId(0)
                         .setShowAlphaSlider(true)
                         .show(getActivity());
+                break;
+
+
+            case R.id.reminder:
+                datePickerDialog = new DatePickerDialog(toDoMainActivity, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void setBackgroundColor(int color) {
-        setColor=color;
+        setColor = color;
         addnotefragmentLayout.setBackgroundColor(color);
-
     }
 }
 

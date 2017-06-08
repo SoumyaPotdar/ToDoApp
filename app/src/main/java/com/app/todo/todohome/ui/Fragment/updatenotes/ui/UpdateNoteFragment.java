@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,10 +37,11 @@ import java.util.Calendar;
 import java.util.List;
 
 public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterface,View.OnClickListener {
-    AppCompatEditText dateedittext;
+    AppCompatTextView datetextview;
     AppCompatEditText titleedittext;
     AppCompatEditText descriptionedittext;
     ToDoMainActivity toDoMainActivity;
+    DatePickerDialog datePickerDialog;
     String uid;
     SharedPreferences sharedPreferences;
     FirebaseAuth firebaseAuth;
@@ -69,7 +72,7 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
     };
     private boolean archieve;
     private String reminderdate;
-    public int setColor;
+    public int setColor=Color.WHITE;
 
     public UpdateNoteFragment(ToDoMainActivity toDoMainActivity, int pos) {
         this.toDoMainActivity = toDoMainActivity;
@@ -96,8 +99,8 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
         setHasOptionsMenu(true);
 
         presenter=new UpdatePresenter(getActivity(),this);
-        dateedittext = (AppCompatEditText) view.findViewById(R.id.dateEdittext);
         titleedittext = (AppCompatEditText) view.findViewById(R.id.fragmenttitledittext);
+        datetextview= (AppCompatTextView) view.findViewById(R.id.datetextview);
         descriptionedittext = (AppCompatEditText) view.findViewById(R.id.fragmentdiscriptionedittext);
         addNoteFragmentLayout = (LinearLayout) view.findViewById(R.id.addnotefragment);
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -112,28 +115,26 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
         id = bundle.getInt("id");
         archieve = bundle.getBoolean("archieve");
         currentDate = bundle.getString("currentDate");
-        dateedittext.setText(bundle.getString("reminddate"));
-        dateedittext.setOnClickListener(this);
+        datetextview.setText(bundle.getString("reminddate"));
+        String color=bundle.getString("color");
+
+        if (color.length() == 1 && color.contains("0")){
+            addNoteFragmentLayout.setBackgroundColor(Color.WHITE);
+        }else {
+            addNoteFragmentLayout.setBackgroundColor(Integer.parseInt(color));
+        }
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dateEdittext:
 
-                new DatePickerDialog(getActivity(), date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
-        }
     }
 
     private void updateLabel() {
         String myFormat = "MMMM dd,yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
-
-        dateedittext.setText(sdf.format(myCalendar.getTime()));
+        datetextview.setText(sdf.format(myCalendar.getTime()));
     }
 
     @Override
@@ -147,16 +148,16 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.addnote:
-                reminderdate = descriptionedittext.getText().toString();
+                reminderdate = datetextview.getText().toString();
                 notesDataBaseHandler = new NotesDataBaseHandler(getActivity());
                 notesModel = new NotesModel();
                 notesModel.setNoteDate(currentDate);
                 notesModel.setTitle(titleedittext.getText().toString());
                 notesModel.setDescription(descriptionedittext.getText().toString());
-                notesModel.setReminderDate(dateedittext.getText().toString());
+                notesModel.setReminderDate(datetextview.getText().toString());
                 notesModel.setId(id);
                 notesModel.setColor(String.valueOf(setColor));
-                notesDataBaseHandler.updateNotes(notesModel);
+               // notesDataBaseHandler.updateNotes(notesModel);
                 presenter.updateNote(notesModel);
                 break;
 
@@ -165,6 +166,19 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
                         .setColor(Color.BLACK).setDialogId(0)
                         .setShowAlphaSlider(true)
                         .show(getActivity());
+                break;
+
+            case R.id.reminder:
+               /* datePickerDialog=new  DatePickerDialog(toDoMainActivity, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();*/
+                datePickerDialog = new DatePickerDialog(toDoMainActivity, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -180,7 +194,7 @@ public class UpdateNoteFragment extends Fragment implements UpdateNoteViewInterf
         Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
-    public void setBackgroundColor(int color) {
+    public void setFragmentBackgroundColor(int color) {
         setColor=color;
        addNoteFragmentLayout.setBackgroundColor(color);
     }
