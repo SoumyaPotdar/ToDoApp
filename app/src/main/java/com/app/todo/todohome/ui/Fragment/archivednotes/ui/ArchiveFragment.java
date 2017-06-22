@@ -26,11 +26,14 @@ import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenter;
 import com.app.todo.todohome.ui.Fragment.archivednotes.presenter.ArchivePresenterInterface;
 import com.app.todo.utils.Constants;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -51,6 +54,8 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
     private List<NotesModel> searchList;
     private NotesDataBaseHandler notesDataBaseHandler;
     private NotesModel notesModel;
+    private String TAG = "ArchiveFragment";
+
 
     public ArchiveFragment(Context context,ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes){
         this.toDoMainActivity=toDoMainActivity;
@@ -62,6 +67,8 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_archieve, container, false);
+        Fabric.with(getActivity(),new Crashlytics());
+
         setHasOptionsMenu(true);
         recyclerView= (RecyclerView) view.findViewById(R.id.archive_recyclerview);
         progressDialog=new ProgressDialog(getActivity());
@@ -129,10 +136,10 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
         }
         return notesModels;
     }
-    @Override
+ /*   @Override
     public void getNotesFailure(String message) {
-        presenter.getNotesFailure(message);
-    }
+       // presenter.getNotesFailure(message);
+    }*/
 
     @Override
     public void showDialog(String message) {
@@ -231,12 +238,12 @@ public class ArchiveFragment extends Fragment implements ArchieveFragmentInterfa
 
     @Override
     public void moveToTrashSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void retriveNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 }
 

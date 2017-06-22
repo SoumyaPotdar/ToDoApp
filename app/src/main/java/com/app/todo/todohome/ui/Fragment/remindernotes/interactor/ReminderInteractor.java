@@ -36,7 +36,6 @@ public class ReminderInteractor implements ReminderInteractorInterface {
     @Override
     public void getReminderNoteList(final String userId) {
         presenter.showDialog("Fetching data");
-        if (Connectivity.isNetworkConnected(context)){
            databaseReference= FirebaseDatabase.getInstance().getReference();
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
@@ -64,10 +63,10 @@ public class ReminderInteractor implements ReminderInteractorInterface {
                         }
                     }
             );
-        }else {
+
             presenter.getNotesFailure(context.getString(R.string.no_internet));
             presenter.hideDialog();
         }
 
     }
-}
+

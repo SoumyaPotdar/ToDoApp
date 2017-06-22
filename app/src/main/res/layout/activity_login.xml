@@ -1,91 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:weightSum="1">
+    android:fitsSystemWindows="true"
+    >
 
     <FrameLayout
-        android:id="@+id/dailogframe"
+        android:id="@+id/dailogframelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@android:color/white">
-    </FrameLayout>
+        android:background="@android:color/white"
+        android:visibility="gone"></FrameLayout>
 
-
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="@dimen/icon_width"
-        android:layout_height="@dimen/icon_height"
-        android:layout_marginLeft="@dimen/icon_lmargin"
-        android:background="@drawable/bridgelabz" />
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/loginEdittext"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_edittext"
-        android:hint="@string/email"
-        android:padding="10dp" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true">
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/passwordEdittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:inputType="textPassword"
-        android:background="@drawable/rounded_edittext"
-        android:hint="Password"
-        android:padding="10dp" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/forgotpassTextview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Forgot Password?"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/text_size" />
-
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/loginbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_b"
-        android:layout_marginTop="@dimen/marg_top_25dp"
-        android:background="@drawable/rounded_button"
-        android:text="@string/loginbtn"
-        android:textStyle="bold" />
-
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/createaccounttextview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="@dimen/margin"
-        android:text="Create Account"
-        android:textSize="@dimen/text_size" />
-
-
-        <com.facebook.login.widget.LoginButton
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:id="@+id/fbLogIn"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/signingoogle"
-        android:layout_marginTop="@dimen/margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView"
+                android:layout_width="@dimen/icon_width"
+                android:layout_height="@dimen/icon_height"
+                android:layout_marginLeft="@dimen/icon_lmargin"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bridgelabz" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/loginEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/marg_top_25dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="@string/email"
+                android:maxLines="1"
+                android:padding="10dp" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/passwordEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:padding="10dp" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/forgotpassTextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Forgot Password?"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/loginbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_b"
+                android:layout_marginTop="@dimen/marg_top_25dp"
+                android:background="@drawable/rounded_button"
+                android:text="@string/loginbtn"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/createaccounttextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="@dimen/margin"
+                android:text="Create Account"
+                android:textSize="@dimen/text_size" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/fbLogIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/signingoogle"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginBottom="@dimen/marg_top_25dp"
+                android:layout_marginTop="@dimen/margin" />
+        </LinearLayout>
+    </ScrollView>
+
+
 </LinearLayout>
-</ScrollView>

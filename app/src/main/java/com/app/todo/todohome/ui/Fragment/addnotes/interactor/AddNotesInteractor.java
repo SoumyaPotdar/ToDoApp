@@ -9,6 +9,7 @@ import com.app.todo.model.NotesModel;
 import com.app.todo.todohome.ui.Fragment.addnotes.presenter.AddNotePresenter;
 import com.app.todo.todohome.ui.Fragment.addnotes.presenter.AddNotePresenterInterface;
 import com.app.todo.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +34,7 @@ public class AddNotesInteractor implements AddNotesInteractorInterface {
         this.context = context;
         databaseReference = FirebaseDatabase.getInstance().getReference();
         presenter = addNotePresenter;
+        uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @Override
@@ -76,6 +78,13 @@ public class AddNotesInteractor implements AddNotesInteractorInterface {
     public void putdata(int index, NotesModel notesModel) {
         notesModel.setId(index);
         databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate()).child(String.valueOf(index)).setValue(notesModel);
-        presenter.addNoteSuccess("Note added successfully");
+        presenter.addNoteSuccess(notesModel);
+    }
+
+    @Override
+    public void updateNote(NotesModel notesModel) {
+        databaseReference.child("userdata")
+                .child(uid).child(notesModel.getNoteDate())
+                .child(String.valueOf(notesModel.getId())).setValue(notesModel);
     }
 }

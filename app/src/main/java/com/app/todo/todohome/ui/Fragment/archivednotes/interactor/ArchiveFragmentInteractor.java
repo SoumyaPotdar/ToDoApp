@@ -41,7 +41,6 @@ public class ArchiveFragmentInteractor implements ArchiveInteractorInterface{
     @Override
     public void getAllNotelist(final String userId) {
         presenter.showDialog("Fetching data");
-        if (Connectivity.isNetworkConnected(context)){
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
                         @Override
@@ -63,18 +62,15 @@ public class ArchiveFragmentInteractor implements ArchiveInteractorInterface{
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            presenter.getNotesFailure(context.getString(R.string.some_error));
+                           // presenter.getNotesFailure(context.getString(R.string.some_error));
                             presenter.hideDialog();
                         }
                     }
             );
-        }else {
-            presenter.getNotesFailure(context.getString(R.string.no_internet));
+          //  presenter.getNotesFailure(context.getString(R.string.no_internet));
             presenter.hideDialog();
         }
 
-
-        }
 
     @Override
     public void moveToTrash(NotesModel notesModel) {

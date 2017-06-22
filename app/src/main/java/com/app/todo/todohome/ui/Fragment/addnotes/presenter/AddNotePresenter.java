@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.app.todo.model.NotesModel;
 import com.app.todo.todohome.ui.Fragment.addnotes.interactor.AddNotesInteractor;
-import com.app.todo.todohome.ui.Fragment.addnotes.interactor.AddNotesInteractorInterface;
 import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteViewInterface;
 
 public class AddNotePresenter implements AddNotePresenterInterface {
@@ -30,8 +29,13 @@ public class AddNotePresenter implements AddNotePresenterInterface {
     }
 
     @Override
-    public void addNoteSuccess(String message) {
-        viewInterface.addNoteSuccess(message);
+    public void updateNote(NotesModel notesModel) {
+        addNotesInteractor.updateNote(notesModel);
+    }
+
+    @Override
+    public void addNoteSuccess(NotesModel notesModel) {
+        viewInterface.addNoteSuccess(notesModel);
     }
 
     @Override

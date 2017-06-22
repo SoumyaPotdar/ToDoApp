@@ -5,7 +5,7 @@
 
     <item android:id="@+id/search"
         android:title="@string/search_title"
-        android:icon="@android:drawable/ic_search_category_default"
+        android:icon="@drawable/ic_action_seach"
         app:showAsAction="collapseActionView|always"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
@@ -14,8 +14,4 @@
         android:title="@string/changeview"
         app:showAsAction="always"
         android:icon="@drawable/ic_action_straggered"/>
-
-
-
-
 </menu>

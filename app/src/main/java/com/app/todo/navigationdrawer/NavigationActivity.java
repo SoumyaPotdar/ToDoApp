@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.baseclass.BaseActivity;
 import com.app.todo.model.NotesModel;
@@ -26,6 +27,8 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class
 NavigationActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +46,8 @@ NavigationActivity extends BaseActivity implements NavigationView.OnNavigationIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
+        Fabric.with(this,new Crashlytics());
+
         initView();
 
         database=FirebaseDatabase.getInstance();

@@ -7,9 +7,11 @@ public class NotesModel
     String description;
     String noteDate;
     String reminderDate;
+    String reminderTime;
     boolean archieve;
     boolean trash;
     String color;
+
 
     public NotesModel(int id, String title, String description)
     {
@@ -22,11 +24,12 @@ public class NotesModel
 
     }
 
-    public NotesModel(String noteDate, String title, String description, String reminderDate, boolean archieve, String color, boolean trash) {
+    public NotesModel(String noteDate, String title, String description, String reminderDate,String reminderTime, boolean archieve, String color, boolean trash) {
         this.noteDate=noteDate;
         this.title=title;
         this.description=description;
         this.reminderDate=reminderDate;
+        this.reminderTime=reminderTime;
         this.archieve=archieve;
         this.color=color;
         this.trash=trash;
@@ -47,6 +50,14 @@ public class NotesModel
 
     public void setReminderDate(String reminderDate) {
         this.reminderDate = reminderDate;
+    }
+
+
+    public String getReminderTime() {return reminderTime;
+    }
+
+    public void setReminderTime(String reminderTime) {
+        this.reminderTime = reminderTime;
     }
 
     public boolean isArchieve() {

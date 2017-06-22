@@ -47,11 +47,11 @@ public class TrashPresenter implements TrashPresenterInterface{
     public void getNotesSuccess(List<NotesModel> notesModelList) {
         trashFragmentView.getNotesSuccess(notesModelList);
     }
-
+/*
     @Override
     public void getNotesFailure(String message) {
         trashFragmentView.deleteNoteFailure(message);
-    }
+    }*/
 
     @Override
     public void showDialog(String message) {
@@ -70,20 +70,20 @@ public class TrashPresenter implements TrashPresenterInterface{
         trashFragmentView.deleteNoteSuccess(message);
     }
 
-    @Override
+   /* @Override
     public void deleteNoteFailure(String message) {
 
         trashFragmentView.deleteNoteSuccess(message);
     }
-
+*/
     @Override
     public void retriveNoteSuccess(String message) {
         trashFragmentView.retriveNoteSuccess(message);
     }
-
+/*
     @Override
     public void retriveNoteFailure(String message) {
 
         trashFragmentView.deleteNoteFailure(message);
-    }
+    }*/
 }

@@ -17,7 +17,11 @@
         app:cardBackgroundColor="@color/colorwhite"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:stateListAnimator="@anim/animation"
+        android:clickable="true"
+        >
 
         <LinearLayout
             android:id="@+id/cardviewlayout"
@@ -31,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin"
                 android:textColor="#010405"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold|italic"
                 tools:hint="Title" />
 
@@ -43,7 +47,7 @@
                 android:layout_marginTop="10dp"
                 tools:hint="Description"
                 android:textColor="#010405"
-                android:textSize="15sp"
+                android:textSize="10sp"
                 android:alpha="0.54"
                 />
 <LinearLayout
@@ -74,9 +78,21 @@
                 android:layout_marginLeft="10dp"
                 android:textColor="@android:color/black"
                 tools:hint="Reminder date"
+                android:textSize="10dp"
                 android:textStyle="bold|italic"
                 android:alpha="0.54"
-                /></LinearLayout>
+                />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/remindtimetextview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:textColor="@android:color/black"
+        tools:hint="Reminder date"
+        android:textStyle="bold|italic"
+        android:textSize="10dp"
+        android:alpha="0.54"
+        /> </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

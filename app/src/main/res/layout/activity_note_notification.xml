@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notificationlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="#f4f3f3">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/titledittext"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@android:color/transparent"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/marg_top_25dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:hint="Title">
+        </android.support.v7.widget.AppCompatTextView>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/discriptionedittext"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/titledittext"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="@dimen/marg_top_25dp"
+            android:hint="Description">
+        </android.support.v7.widget.AppCompatTextView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/remindertextview"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="@dimen/margin">
+    </View>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/remindertextview"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/margin"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:hint="Reminder Date"
+        android:focusable="false">
+    </android.support.v7.widget.AppCompatTextView>
+</RelativeLayout>

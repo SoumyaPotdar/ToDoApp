@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/backarrow"
+        android:title="Back"
+        android:icon="@drawable/ic_action_backarrow"
+        app:showAsAction="always"/>
     <item android:id="@+id/reminder"
         android:title="Add reminder"
         app:showAsAction="always"
@@ -17,4 +21,8 @@
         android:title="@string/add_title"
         android:icon="@drawable/ic_action_save"
         app:showAsAction="always"/>
+
+    <item android:title=""
+        app:showAsAction="always"/>
+
 </menu>

@@ -25,7 +25,6 @@ public class RegistrationInteractor   implements  RegistrationInteractorInterfac
         mAuth = FirebaseAuth.getInstance();
         mDatabase= FirebaseDatabase.getInstance().getReference("users");
     }
- 
 
     @Override
     public void requestForRegister(final String name, final String email, final String mobileno, final String password) {
@@ -43,7 +42,7 @@ public class RegistrationInteractor   implements  RegistrationInteractorInterfac
                     model.setMobileNo(mobileno);
                     model.setEmail(email);
                     mDatabase.child(userId).setValue(model);
-                    registrationPresenter.registerSuccess(context.getString(R.string.register_success));
+                    registrationPresenter.registerSuccess(model);
                     registrationPresenter.hideProgressDailog();
                 } else {
                     registrationPresenter.registerFailure(context.getString(R.string.reg_failed));

@@ -26,10 +26,13 @@ import com.app.todo.todohome.ui.Fragment.notes.ui.NotesFragment;
 import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenter;
 import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenterInterface;
 import com.app.todo.utils.Constants;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.example.bridgeit.todoapp.R.id.search;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -48,6 +51,9 @@ public  class TrashFragment extends Fragment implements TrashFragmentViewInterfa
     private String userId;
     SharedPreferences userPref;
     SharedPreferences.Editor editor;
+    private String TAG = "TrashFragment";
+
+
 
     private ProgressDialog progressDialog;
     private boolean isView;
@@ -68,6 +74,8 @@ public  class TrashFragment extends Fragment implements TrashFragmentViewInterfa
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
       View view=inflater.inflate(R.layout.trashfragment,container,false);
+        Fabric.with(getActivity(),new Crashlytics());
+
         setHasOptionsMenu(true);
         getActivity().setTitle("Trash");
         userPref = getActivity().getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
@@ -196,29 +204,29 @@ public  class TrashFragment extends Fragment implements TrashFragmentViewInterfa
 
     @Override
     public void deleteNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+   /* @Override
     public void deleteNoteFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
-
+*/
     @Override
     public void retriveNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void retriveNoteFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+   /* @Override
     public void getNotesFailure(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
-
+*/
     @Override
     public void showDialog(String message) {
        // if(!getActivity().isFinishing()){

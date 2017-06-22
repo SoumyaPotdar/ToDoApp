@@ -8,7 +8,7 @@ public interface ArchivePresenterInterface {
     void getAllNotelist(String userId);
 
     void getNotesSuccess(List<NotesModel> notesModelList);
-    void getNotesFailure(String message);
+   // void getNotesFailure(String message);
 
     void showDialog(String message);
     void hideDialog();

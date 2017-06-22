@@ -2,6 +2,7 @@ package com.app.todo.todohome.ui.Fragment.notes.ui;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +26,9 @@ import android.widget.Toast;
 import com.app.todo.adapter.RecyclerAdapter;
 import com.app.todo.model.NotesModel;
 import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
+import com.app.todo.todohome.ui.Activity.DrawerLocker;
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
+import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteActivity;
 import com.app.todo.todohome.ui.Fragment.addnotes.ui.AddNoteFragment;
 import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenter;
 import com.app.todo.todohome.ui.Fragment.notes.presenter.NotesPresenterInterface;
@@ -34,6 +37,7 @@ import com.app.todo.todohome.ui.Fragment.trashnotes.presenter.TrashPresenterInte
 import com.app.todo.todohome.ui.Fragment.trashnotes.ui.TrashFragment;
 import com.app.todo.todohome.ui.Fragment.trashnotes.ui.TrashFragmentViewInterface;
 import com.app.todo.utils.Constants;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -42,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -75,7 +81,11 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        Fabric.with(getActivity(),new Crashlytics());
+
         setHasOptionsMenu(true);
+        ((DrawerLocker) getActivity()).setDrawerEnabled(true);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.notes_recyclerview);
         trashNoteList=new ArrayList<>();
         presenter = new NotesPresenter(getActivity(), this);
@@ -95,8 +105,12 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
         addNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddNoteFragment addNoteFragment = new AddNoteFragment(mContext,(ToDoMainActivity) getActivity());
+                /*AddNoteFragment addNoteFragment = new AddNoteFragment(mContext,(ToDoMainActivity) getActivity());
                 getFragmentManager().beginTransaction().replace(R.id.fragment, addNoteFragment).addToBackStack(null).commit();
+ */              Intent intent=new Intent(getActivity(),AddNoteActivity.class);
+                startActivity(intent);
+
+
             }
         });
         return view;
@@ -238,27 +252,27 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     @Override
     public void deleteNoteSuccess(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void deleteNoteFailure(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void archiveNoteSuccess(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void archiveNoteFailure(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void undoNoteSuccess(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -268,11 +282,11 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
     @Override
     public void moveToTrashSuccess(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void moveToTrashFailure(String message) {
-        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ArchieveFragmentInterface {
     void getNotesSuccess(List<NotesModel> notesModelList);
-    void getNotesFailure(String message);
+    //void getNotesFailure(String message);
 
     void showDialog(String message);
     void hideDialog();

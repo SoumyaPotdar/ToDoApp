@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/addnotefragment"
@@ -10,7 +13,8 @@
    <android.support.design.widget.TextInputLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_marginTop="59dp"
+       android:layout_marginTop="60dp"
+
        >
 
       <android.support.v7.widget.AppCompatEditText
@@ -20,7 +24,6 @@
           android:background="@android:color/transparent"
           android:textStyle="bold"
           android:layout_marginLeft="@dimen/margin"
-          android:layout_marginTop="@dimen/margin"
           android:hint="Title">
       </android.support.v7.widget.AppCompatEditText>
 
@@ -31,27 +34,198 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
     >
-
-      <android.support.v7.widget.AppCompatEditText
-          android:id="@+id/fragmentdiscriptionedittext"
-          android:layout_height="wrap_content"
-          android:layout_width="match_parent"
-          android:background="@android:color/transparent"
-          android:layout_marginLeft="@dimen/margin"
-          android:layout_marginTop="@dimen/margin"
-         android:hint="Description">
-      </android.support.v7.widget.AppCompatEditText>
-
    </android.support.design.widget.TextInputLayout>
+
+
+   <android.support.v7.widget.AppCompatEditText
+       android:id="@+id/fragmentdiscriptionedittext"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="@dimen/margin"
+       android:layout_marginTop="@dimen/margin"
+       android:background="@android:color/transparent"
+       android:hint="Description">
+   </android.support.v7.widget.AppCompatEditText>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/remindertextview"
+        android:background="@android:color/darker_gray"
+       >
+    </View>
+
+   <LinearLayout
+
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:id="@+id/bottom_layout"
+
+       android:weightSum="1">
 
       <android.support.v7.widget.AppCompatTextView
           android:id="@+id/datetextview"
           android:layout_height="wrap_content"
           android:layout_width="match_parent"
           android:layout_marginLeft="@dimen/margin"
-          android:layout_marginTop="@dimen/margin"
           android:hint="Reminder Date"
+          android:layout_weight="0.5"
           android:focusable="false">
       </android.support.v7.widget.AppCompatTextView>
 
+      <android.support.v7.widget.AppCompatTextView
+          android:id="@+id/remindertimetextview"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:layout_marginLeft="@dimen/margin"
+          android:layout_weight="0.5"
+          android:hint="Reminder Time"
+          android:focusable="false">
+      </android.support.v7.widget.AppCompatTextView>
+   </LinearLayout>
+
+</LinearLayout>-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+
+    android:fitsSystemWindows="true">
+   <android.support.design.widget.AppBarLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:theme="@style/AppTheme.AppBarOverlay"
+       >
+
+      <android.support.v7.widget.Toolbar
+          android:id="@+id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          android:background="@color/colorPrimary"
+          >
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/back_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_back"
+                android:layout_alignParentLeft="true"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/colorpicker_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/reminder_imageview"
+
+                android:src="@drawable/ic_action_colorpicker"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/reminder_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/save_imageview"
+                android:src="@drawable/ic_action_reminder"
+               />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/save_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/save_imageview"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_action_save"/>
+
+         </RelativeLayout>
+          </android.support.v7.widget.Toolbar>
+
+   </android.support.design.widget.AppBarLayout>
+
+   <RelativeLayout
+       xmlns:android="http://schemas.android.com/apk/res/android"
+       android:id="@+id/contentLayout_relative"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       >
+      <android.support.design.widget.TextInputLayout
+          android:id="@+id/titleLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp">
+         <android.support.v7.widget.AppCompatEditText
+             android:id="@+id/fragmenttitledittext"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:background="@android:color/transparent"
+             android:textStyle="bold"
+             android:layout_marginLeft="10dp"
+             android:hint="Title"/>
+      </android.support.design.widget.TextInputLayout>
+      
+      <android.support.design.widget.TextInputLayout
+          android:id="@+id/descriptionLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="15dp"
+          android:layout_below="@+id/titleLayout"
+          >
+         <android.support.v7.widget.AppCompatEditText
+             android:id="@+id/fragmentdiscriptionedittext"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="10dp"
+             android:layout_marginTop="5dp"
+             android:background="@android:color/transparent"
+             android:hint="Description"
+             android:layout_below="@+id/fragmenttitledittext"/>
+
+      </android.support.design.widget.TextInputLayout>
+
+      <View
+          android:id="@+id/viewlast"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_above="@+id/time_layout"
+          android:background="@android:color/black" />
+      <LinearLayout
+          android:id="@+id/time_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_alignParentBottom="true"
+          android:gravity="center"
+          android:weightSum="1">
+         <android.support.v7.widget.AppCompatTextView
+             android:id="@+id/datetextview"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:layout_marginLeft="15dp"
+             android:hint="Reminder Date"
+             android:layout_weight="0.5"
+             android:focusable="false">
+         </android.support.v7.widget.AppCompatTextView>
+
+         <android.support.v7.widget.AppCompatTextView
+             android:id="@+id/remindertimetextview"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:layout_weight="0.5"
+             android:hint="Reminder Time"
+             android:focusable="false">
+         </android.support.v7.widget.AppCompatTextView>
+      </LinearLayout>
+
+   </RelativeLayout>
 </LinearLayout>

@@ -36,7 +36,6 @@ public class TrashInteractor implements TrashInteractorInterface{
     @Override
     public void getAllNotelist(final String userId) {
         trashPresenter.showDialog("Fetching data");
-        if (Connectivity.isNetworkConnected(context)){
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
                         @Override
@@ -58,21 +57,22 @@ public class TrashInteractor implements TrashInteractorInterface{
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            trashPresenter.getNotesFailure(context.getString(R.string.some_error));
+                          //  trashPresenter.getNotesFailure(context.getString(R.string.some_error));
                             trashPresenter.hideDialog();
                         }
                     }
             );
-        }else {
-            trashPresenter.getNotesFailure(context.getString(R.string.no_internet));
+
+            //trashPresenter.getNotesFailure(context.getString(R.string.no_internet));
             trashPresenter.hideDialog();
         }
-    }
 
     @Override
-    public void deleteNote(int position, NotesModel notesModel) {
+    public void deleteNote(int position, NotesModel notesModel)
+    {
         databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
                 .child(String.valueOf(notesModel.getId())).removeValue();
+
         trashPresenter.deleteNoteSuccess("Note deleted");
 
     }

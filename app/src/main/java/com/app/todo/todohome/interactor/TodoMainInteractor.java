@@ -47,13 +47,12 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
                             GenericTypeIndicator<ArrayList<NotesModel>> t =
                                     new GenericTypeIndicator<ArrayList<NotesModel>>() {
                                     };
-
-                            for (DataSnapshot obj : dataSnapshot.child(userId).getChildren()) {
-                                List<NotesModel> li;
-                                li = obj.getValue(t);
-
-                               // list.add(child.getValue(Friends.class));
-                                noteList.addAll(li);
+                            if(dataSnapshot.child(userId).exists()) {
+                                for (DataSnapshot obj : dataSnapshot.child(userId).getChildren()) {
+                                    List<NotesModel> li;
+                                    li = obj.getValue(t);
+                                    noteList.addAll(li);
+                                }
                             }
                             noteList.removeAll(Collections.singleton(null));
                             presenter.getNotesSuccess(noteList);
@@ -62,7 +61,7 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            presenter.getNotesFailure(context.getString(R.string.some_error));
+                           // presenter.getNotesFailure(context.getString(R.string.some_error));
                             presenter.hideDialog();
                         }
                     }

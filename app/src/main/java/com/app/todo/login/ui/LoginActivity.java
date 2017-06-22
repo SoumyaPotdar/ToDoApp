@@ -10,10 +10,13 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.registration.ui.RegistrationActivity;
+import com.app.todo.todohome.ui.Fragment.DailogFragment;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.BuildConfig;
 import com.example.bridgeit.todoapp.R;
 import com.app.todo.baseclass.BaseActivity;
@@ -55,6 +58,8 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import io.fabric.sdk.android.Fabric;
+
 public class LoginActivity extends BaseActivity implements LoginViewInterface, GoogleApiClient.OnConnectionFailedListener {
     private String TAG = "LoginActivity";
 
@@ -70,6 +75,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     SessionManagement session;
     CallbackManager callbackManager;
     GoogleApiClient googleApiClient;
+    FrameLayout frameLayout;
 
     String message;
     SignInButton signInButton;
@@ -81,6 +87,8 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Fabric.with(this,new Crashlytics());
+
 
         if (BuildConfig.DEBUG) {
             FacebookSdk.setIsDebugEnabled(true);
@@ -109,6 +117,8 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Log.i(TAG, "onSuccess: ");
+                        frameLayout.setVisibility(View.VISIBLE);
+
                         handleFacebook(loginResult.getAccessToken());
                         String accessToken = loginResult.getAccessToken().getToken();
                         Log.i("accesstoken", "access Token ");
@@ -176,14 +186,13 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         });
     }
 
-
-
     @Override
     public void initView() {
 
         presenter = new LoginPresenter(this, this);
 
         mAuth = FirebaseAuth.getInstance();
+        frameLayout= (FrameLayout) findViewById(R.id.dailogframelayout);
         //   googlesigninbutton= (AppCompatButton) findViewById(R.id.signingoogle);
         useremailedittext = (AppCompatEditText) findViewById(R.id.loginEdittext);
         userpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordEdittext);
@@ -204,15 +213,23 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     private boolean validate() {
         boolean valid = false;
-        if (useremailedittext.getText().toString().length() == 0 || userpasswordedittext.getText().toString().length() == 0) {
-            Toast.makeText(getApplicationContext(), R.string.blank, Toast.LENGTH_SHORT).show();
+        if (useremailedittext.getText().toString().length() == 0  ) {
+            // Toast.makeText(getApplicationContext(), R.string.blank, Toast.LENGTH_SHORT).show();
+            useremailedittext.setError(getString(R.string.blank));
+        }
+            else if (userpasswordedittext.getText().toString().length() == 0) {
+            userpasswordedittext.setError(getString(R.string.blank));
             valid = false;
         } else {
             if (useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() >= 6) {
                 valid = true;
             }
-            if (!useremailedittext.getText().toString().matches(emailPattern) && userpasswordedittext.getText().toString().length() < 6) {
+            if (!useremailedittext.getText().toString().matches(emailPattern) )
+            {
+                useremailedittext.setError(getString(R.string.invalid_email));
                 valid = false;
+            }else if(userpasswordedittext.getText().toString().length() < 6){
+                userpasswordedittext.setError(getString(R.string.invalid_pass));
             }
         }
         return valid;
@@ -258,7 +275,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     @Override
     public void loginFailure(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     ProgressDialog progressDialog;
@@ -284,6 +301,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        frameLayout.setVisibility(View.INVISIBLE);
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
 

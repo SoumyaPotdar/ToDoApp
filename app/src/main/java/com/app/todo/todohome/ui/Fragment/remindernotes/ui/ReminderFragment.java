@@ -24,6 +24,7 @@ import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.todohome.ui.Fragment.remindernotes.presenter.ReminderPresenter;
 import com.app.todo.todohome.ui.Fragment.remindernotes.presenter.ReminderPresenterInterface;
 import com.app.todo.utils.Constants;
+import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.content.ContentValues.TAG;
 import static com.example.bridgeit.todoapp.R.id.search;
@@ -49,6 +52,8 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
     SharedPreferences userPref;
     Format format;
     private List<NotesModel> searchList;
+    private String TAG = "ReminderFragment";
+
 
     public ReminderFragment(ToDoMainActivity toDoMainActivity, List<NotesModel> allNotes){
         this.toDoMainActivity=toDoMainActivity;
@@ -61,6 +66,8 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_remainder, container, false);
+        Fabric.with(getActivity(),new Crashlytics());
+
         setHasOptionsMenu(true);
         recyclerView= (RecyclerView) view.findViewById(R.id.reminder_recyclerview);
         presenter=new ReminderPresenter(getActivity(),this);
@@ -130,7 +137,7 @@ public class ReminderFragment extends Fragment implements ReminderFragmentViewIn
 
     @Override
     public void getNotesFailure(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.app.todo.registration.presenter;
 
 import android.content.Context;
 
+import com.app.todo.model.UserModel;
 import com.app.todo.registration.interactor.RegistrationInteractor;
 import com.app.todo.registration.ui.RegistrationViewInterface;
 
@@ -22,8 +23,8 @@ public class RegistrationPresenter implements RegistrationPresenterInterface {
     }
 
     @Override
-    public void registerSuccess(String message) {
-        registerViewInterface.registrationSuccess(message);
+    public void registerSuccess(UserModel userModel) {
+        registerViewInterface.registrationSuccess(userModel);
     }
 
     @Override

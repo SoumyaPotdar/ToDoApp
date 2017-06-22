@@ -33,13 +33,6 @@ public class NotesInteractor implements NotesInteractorInterface {
         trashNoteList=new ArrayList<>();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-/*
-    @Override
-    public void moveToTrash(int position, NotesModel notesModel) {
-        recyclerAdapter.addNote(notesModel);
-        trashNoteList.add(notesModel);
-        moveToTrashSuccess("Note moved to trash");
-    }*/
 
     @Override
 

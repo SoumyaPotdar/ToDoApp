@@ -6,15 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import com.app.todo.model.NotesModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class NotesDataBaseHandler extends SQLiteOpenHelper
 {
-
     final  static int DATABASE_VERSION = 1;
     private  static  final String DATABASE_NAME="NotesManager";
     private static final String TABLE_NOTES="Notes";
@@ -25,6 +22,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     private  static  final String key_reminderdate="reminderDate";
     private  static  final String key_archieve="archieve";
     private  static  final String key_colorpick="colorpick";
+    private  static  final String key_timepick="timepick";
 
     public NotesDataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,7 +32,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES + "("+ key_id +" TEXT,"+ key_title+" TEXT,"+ key_description+" TEXT,"+ key_currentdate +" TEXT,"+ key_reminderdate+" TEXT,"+ key_archieve+" TEXT,"+key_colorpick+" TEXT)";
+        String CREATE_TABLE_NOTES="CREATE TABLE "+ TABLE_NOTES + "("+ key_id +" TEXT,"+ key_title+" TEXT,"+ key_description+" TEXT,"+ key_currentdate +" TEXT,"+ key_reminderdate+" TEXT,"+key_timepick+" TEXT,"+ key_archieve+" TEXT,"+key_colorpick+" TEXT)";
         db.execSQL(CREATE_TABLE_NOTES);
     }
 
@@ -47,7 +45,6 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    
     // code to add the new notes
     public  void addNote(NotesModel notesModel) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -59,6 +56,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         values.put(key_reminderdate,notesModel.getReminderDate());
         values.put(key_archieve,notesModel.isArchieve());
         values.put(key_colorpick,notesModel.getColor());
+        values.put(key_timepick,notesModel.getReminderTime());
 
         //inserting rows
         db.insert(TABLE_NOTES,null,values);
@@ -77,6 +75,7 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         values.put(key_reminderdate,model.getReminderDate());
         values.put(key_archieve,model.isArchieve());
         values.put(key_colorpick,model.getColor());
+        values.put(key_timepick,model.getReminderTime());
 
         // updating row
        db.update(TABLE_NOTES, values, key_title + " = ?", new String[] { model.getTitle() });
@@ -92,9 +91,6 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
         NotesModel notesModel = new NotesModel(cursor.getString(0), cursor.getString(1),cursor.getString(2));
         return notesModel;
     }*/
-
-
-
     // code to get all notes in a list view
     public List<NotesModel> getAllNotes() {
         List<NotesModel> noteslist = new ArrayList<NotesModel>();
@@ -112,9 +108,8 @@ public class NotesDataBaseHandler extends SQLiteOpenHelper
                 notesModel.setDescription(cursor.getString(2));
                 notesModel.setReminderDate(cursor.getString(3));
                 notesModel.setColor(cursor.getString(4));
-/*
-                notesModel.setArchieve(cursor.getString(4));
-*/
+                notesModel.setReminderTime(cursor.getString(5));
+
                 // Adding contact to list
                 noteslist.add(notesModel);
             } while (cursor.moveToNext());

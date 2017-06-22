@@ -29,11 +29,11 @@ public class ArchivePresenter implements ArchivePresenterInterface {
     public void getNotesSuccess(List<NotesModel> notesModelList) {
        viewInterface.getNotesSuccess(notesModelList);
     }
-
+/*
     @Override
     public void getNotesFailure(String message) {
-        viewInterface.getNotesFailure(message);
-    }
+       // viewInterface.getNotesFailure(message);
+    }*/
 
     @Override
     public void showDialog(String message) {

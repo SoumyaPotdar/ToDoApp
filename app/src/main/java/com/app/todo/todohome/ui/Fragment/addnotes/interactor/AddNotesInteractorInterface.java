@@ -5,4 +5,6 @@ import com.app.todo.model.NotesModel;
 public interface AddNotesInteractorInterface {
     void getIndex(final NotesModel notesModel);
     void putdata(int index, NotesModel model);
+    void updateNote(NotesModel notesModel);
+
 }
