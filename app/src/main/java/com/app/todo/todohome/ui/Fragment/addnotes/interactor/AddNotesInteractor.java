@@ -51,6 +51,13 @@ public class AddNotesInteractor implements AddNotesInteractorInterface {
                             new GenericTypeIndicator<ArrayList<NotesModel>>() {
                             };
                     List<NotesModel> li = new ArrayList<>();
+                    List<NotesModel> noteList = new ArrayList<>();
+
+
+                    for (DataSnapshot obj : snapshot.child("userdata").child(uid).getChildren()) {
+                        li = obj.getValue(t);
+                        noteList.addAll(li);
+                    }
 
                     if (snapshot.child("userdata").child(uid).child(notesModel.getNoteDate()).exists()) {
                         li = snapshot.child("userdata").child(uid).child(notesModel.getNoteDate()).getValue(t);
@@ -58,6 +65,7 @@ public class AddNotesInteractor implements AddNotesInteractorInterface {
 
                     if (notemod != null) {
                         int index = li.size();
+                        notemod.setSrNo(noteList.size());
                         putdata(index, notemod);
                         notemod = null;
                     }

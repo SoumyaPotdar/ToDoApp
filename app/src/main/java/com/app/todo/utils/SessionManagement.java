@@ -15,7 +15,7 @@ public class SessionManagement {
 
     public SessionManagement(Context context){
         this.context = context;
-        userPref = this.context.getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
+        userPref = context.getSharedPreferences(Constants.key_pref, Context.MODE_PRIVATE);
         userEditor = userPref.edit();
     }
 

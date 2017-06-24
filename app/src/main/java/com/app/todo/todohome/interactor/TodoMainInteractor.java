@@ -38,7 +38,7 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
     public void getNoteList(final String userId) {
         presenter.showDialog(context.getString(R.string.loading));
 
-        if (Connectivity.isNetworkConnected(context)){
+       // if (Connectivity.isNetworkConnected(context)){
             databaseReference.child(Constants.key_firebase_userData).addValueEventListener(
                     new ValueEventListener() {
                         @Override
@@ -66,9 +66,9 @@ public class TodoMainInteractor implements TodoMainInteractorInterface {
                         }
                     }
             );
-        }else {
+        /*}else {
             presenter.getNotesFailure(context.getString(R.string.no_internet));
             presenter.hideDialog();
-        }
+        }*/
     }
 }

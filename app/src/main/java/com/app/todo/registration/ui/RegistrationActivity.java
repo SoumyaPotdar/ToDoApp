@@ -124,7 +124,6 @@ public class RegistrationActivity extends BaseActivity implements RegistrationVi
             }
             if (passwordlen < 6) {
                 if(toast) {
-                   // Toast.makeText(getApplicationContext(), R.string.invalid_pass, Toast.LENGTH_SHORT).show();
                     regpasswordedittext.setError(getString( R.string.invalid_pass));
                     toast=false;
                 }

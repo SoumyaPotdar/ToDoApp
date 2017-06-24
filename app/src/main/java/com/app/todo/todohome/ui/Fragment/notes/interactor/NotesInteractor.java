@@ -70,5 +70,14 @@ public class NotesInteractor implements NotesInteractorInterface {
                 .child(String.valueOf(notesModel.getId())).setValue(notesModel);
         presenter.moveToTrashSuccess("Note moved to trash");
     }
+
+    @Override
+    public void updateSrNo(List<NotesModel> notesModelList) {
+        for (NotesModel notesModel : notesModelList) {
+            databaseReference.child("userdata").child(uid).child(notesModel.getNoteDate())
+                    .child(String.valueOf(notesModel.getId())).child("srNo")
+                    .setValue(notesModelList.indexOf(notesModel));
+        }
+    }
 }
 

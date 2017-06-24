@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
-import com.app.todo.model.NotesModel;
 import com.example.bridgeit.todoapp.R;
 
 
@@ -32,12 +31,12 @@ public class NotifyService extends Service {
     // Name of an intent extra we can use to identify if this service was started to create a notification
     public static final String INTENT_NOTIFY = "com.blundell.tut.service.INTENT_NOTIFY";
     // The system notification manager
-    private NotificationManager mNM;
+    private NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
         Log.i("NotifyService", "onCreate()");
-        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class NotifyService extends Service {
                 .setLargeIcon(bmp)
                 .build();
         // Send the notIfication to the system.
-        mNM.notify(NOTIFICATION, notification);
+        notificationManager.notify(NOTIFICATION, notification);
         // Stop the service when we are finished
         stopSelf();
     }

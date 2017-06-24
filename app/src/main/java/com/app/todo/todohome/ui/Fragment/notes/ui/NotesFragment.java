@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.app.todo.adapter.RecyclerAdapter;
 import com.app.todo.model.NotesModel;
 import com.app.todo.sqlitedatabase.NotesDataBaseHandler;
@@ -40,14 +40,19 @@ import com.app.todo.utils.Constants;
 import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -56,12 +61,15 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
     private  Context mContext;
     List<NotesModel> models;
     List<NotesModel> allNotes = new ArrayList<>();
+    List<NotesModel> notesModelList;
     ToDoMainActivity toDoMainActivity;
     RecyclerView recyclerView;
     NotesDataBaseHandler notesDataBaseHandler;
     NotesModel notesModel;
     String uid;
     FloatingActionButton addNoteFab;
+     int fromPosition=-1;
+    int toPosition=-1;
     NotesPresenterInterface presenter;
     List<NotesModel> searchList;
     private boolean isView = false;
@@ -88,6 +96,7 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
         recyclerView = (RecyclerView) view.findViewById(R.id.notes_recyclerview);
         trashNoteList=new ArrayList<>();
+        notesModelList=new ArrayList<>();
         presenter = new NotesPresenter(getActivity(), this);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -126,6 +135,18 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
             }
         }
+
+        Collections.sort(notesModels, new Comparator<NotesModel>() {
+            @Override
+            public int compare(NotesModel o1, NotesModel o2) {
+                if (o1.getSrNo() > o2.getSrNo())
+                    return 1;
+                if (o1.getSrNo() < o2.getSrNo())
+                    return -1;
+                return 0;
+            }
+        });
+
         return notesModels;
     }
 
@@ -149,8 +170,16 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                recyclerAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
-                return false;
+                fromPosition = viewHolder.getAdapterPosition();
+                toPosition = target.getAdapterPosition();
+                recyclerAdapter.dragDropNote(fromPosition,toPosition);
+                notesModelList=recyclerAdapter.getAllDataList();
+                return true;
+            }
+
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                if(fromPosition!=-1 && toPosition!=-1)
+                    presenter.updateSrNo(notesModelList);
             }
 
             @Override
@@ -187,11 +216,34 @@ public class NotesFragment extends Fragment implements NotesViewInterface, Searc
                     snackbar.show();
                 }
             }
+
         };
+
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+
+
+    /* private void reorderData() {
+         AsyncTask<String, Void, Spanned> task = new AsyncTask<String, Void, Spanned>() {
+             @Override
+             protected Spanned doInBackground(String... strings) {
+                     for (int i=0;i<=recyclerAdapter.getAllDataList().size() - 1;i++){
+                     NotesModel notesModel = recyclerAdapter.getAllDataList().get(i);
+                     //presenter.updateOrder(notesModel);
+                    // Log.i(TAG, "doInBackground: "+ recyclerAdapter.getAllDataList().indexOf(notesModel)
+                 }
+                 return null;
+             }
+
+             @Override
+             protected void onPostExecute(Spanned spanned) {
+             }
+         };
+         task.execute();
+     }*/
     @Override
     public void onClick(View v) {
     }

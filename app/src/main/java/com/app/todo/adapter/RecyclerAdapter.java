@@ -95,6 +95,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TaskHo
         notifyDataSetChanged();
     }
 
+    public void dragDropNote(int fromPosition, int toPosition) {
+        notesModelList.add(toPosition,notesModelList.remove(fromPosition));
+        notifyItemMoved(fromPosition,toPosition);
+    }
+
     public class TaskHolder extends RecyclerView.ViewHolder {
         public AppCompatTextView textViewtitle,textViewdesc,textViewdate,textViewtime;
 

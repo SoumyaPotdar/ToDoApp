@@ -123,6 +123,8 @@ public class ToDoMainActivity extends BaseActivity implements DrawerLocker,TodoM
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+       // databaseReference = firebaseDatabase.getInstance().getReferenceFromUrl("https://todoapp-bece4.firebaseio.com/").child("userdata");
 
         setTitle("Notes");
         Fabric.with(this, new Crashlytics());
@@ -190,7 +192,10 @@ public class ToDoMainActivity extends BaseActivity implements DrawerLocker,TodoM
         navHeaderEmail = (AppCompatTextView) header.findViewById(R.id.nav_header_email);
         format = new SimpleDateFormat("MMMM dd,yyyy");
         currentDate = format.format(new Date().getTime());
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+       databaseReference = FirebaseDatabase.getInstance().getReference();
+       //databaseReference = firebaseDatabase.getInstance().getReferenceFromUrl("https://todoapp-bece4.firebaseio.com/").child("userdata");
+
+        databaseReference.keepSynced(true);
         circleImageView = (CircleImageView) header.findViewById(R.id.nav_header_imageview);
         utility = new Utility(this);
 

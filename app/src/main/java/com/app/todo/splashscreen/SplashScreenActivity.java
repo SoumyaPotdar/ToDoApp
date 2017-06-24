@@ -31,9 +31,9 @@ public class SplashScreenActivity extends BaseActivity {
         setContentView(R.layout.activity_splash_screen);
         Fabric.with(this,new Crashlytics());
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+       /* FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseReference = firebaseDatabase.getInstance().getReferenceFromUrl("https://todoapp-bece4.firebaseio.com/").child("userdata");
-        databaseReference.keepSynced(true);
+        databaseReference.keepSynced(true);*/
 
         session = new SessionManagement(this);
 

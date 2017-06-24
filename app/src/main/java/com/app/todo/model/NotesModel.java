@@ -3,6 +3,7 @@ package com.app.todo.model;
 public class NotesModel
 {
     int id;
+    int srNo;
     String title;
     String description;
     String noteDate;
@@ -13,29 +14,13 @@ public class NotesModel
     String color;
 
 
-    public NotesModel(int id, String title, String description)
-    {
-        this.id=id;
-        this.title=title;
-        this.description=description;
+    public int getSrNo() {
+        return srNo;
     }
 
-    public NotesModel() {
-
+    public void setSrNo(int srNo) {
+        this.srNo = srNo;
     }
-
-    public NotesModel(String noteDate, String title, String description, String reminderDate,String reminderTime, boolean archieve, String color, boolean trash) {
-        this.noteDate=noteDate;
-        this.title=title;
-        this.description=description;
-        this.reminderDate=reminderDate;
-        this.reminderTime=reminderTime;
-        this.archieve=archieve;
-        this.color=color;
-        this.trash=trash;
-
-    }
-
     public String getNoteDate() {
         return noteDate;
     }
@@ -98,7 +83,6 @@ public class NotesModel
 
     public void setColor(String color) {this.color = color;
     }
-
 
     public boolean isTrash() {
         return trash;

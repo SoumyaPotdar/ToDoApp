@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.app.todo.todohome.ui.Activity.ToDoMainActivity;
 import com.app.todo.registration.ui.RegistrationActivity;
-import com.app.todo.todohome.ui.Fragment.DailogFragment;
 import com.crashlytics.android.Crashlytics;
 import com.example.bridgeit.todoapp.BuildConfig;
 import com.example.bridgeit.todoapp.R;
@@ -69,7 +68,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
     AppCompatButton userloginbutton;
     String useremail, user_password;
     LoginButton fbloginbutton;
-    // AppCompatButton googlesigninbutton;
     String emailPattern = Constants.email_pattern;
     LoginPresenter presenter;
     SessionManagement session;
@@ -170,8 +168,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                                 e.printStackTrace();
                             }
                         }
-                    });     Bundle bundle = new Bundle();
+                    });
 
+                    Bundle bundle = new Bundle();
                     bundle.putString("fields", "id,first_name,last_name,email");
                     request.setParameters(bundle);
                     request.executeAsync();
@@ -193,7 +192,6 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
 
         mAuth = FirebaseAuth.getInstance();
         frameLayout= (FrameLayout) findViewById(R.id.dailogframelayout);
-        //   googlesigninbutton= (AppCompatButton) findViewById(R.id.signingoogle);
         useremailedittext = (AppCompatEditText) findViewById(R.id.loginEdittext);
         userpasswordedittext = (AppCompatEditText) findViewById(R.id.passwordEdittext);
         forgotpasswordtextview = (AppCompatTextView) findViewById(R.id.forgotpassTextview);
@@ -206,15 +204,9 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
         createaccounttextview.setOnClickListener(this);
     }
 
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentuser = mAuth.getCurrentUser();
-    }
-
     private boolean validate() {
         boolean valid = false;
         if (useremailedittext.getText().toString().length() == 0  ) {
-            // Toast.makeText(getApplicationContext(), R.string.blank, Toast.LENGTH_SHORT).show();
             useremailedittext.setError(getString(R.string.blank));
         }
             else if (userpasswordedittext.getText().toString().length() == 0) {
@@ -230,6 +222,7 @@ public class LoginActivity extends BaseActivity implements LoginViewInterface, G
                 valid = false;
             }else if(userpasswordedittext.getText().toString().length() < 6){
                 userpasswordedittext.setError(getString(R.string.invalid_pass));
+                valid=false;
             }
         }
         return valid;

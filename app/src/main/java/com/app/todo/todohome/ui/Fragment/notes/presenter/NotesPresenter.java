@@ -7,6 +7,8 @@ import com.app.todo.todohome.ui.Fragment.notes.interactor.NotesInteractor;
 import com.app.todo.todohome.ui.Fragment.notes.interactor.NotesInteractorInterface;
 import com.app.todo.todohome.ui.Fragment.notes.ui.NotesFragment;
 
+import java.util.List;
+
 public class NotesPresenter implements NotesPresenterInterface {
     Context context;
     NotesFragment noteView;
@@ -91,5 +93,10 @@ public class NotesPresenter implements NotesPresenterInterface {
     @Override
     public void moveToTrash(NotesModel notesModel) {
         interactor.moveToTrash(notesModel);
+    }
+
+    @Override
+    public void updateSrNo(List<NotesModel> notesModelList) {
+        interactor.updateSrNo(notesModelList);
     }
 }
